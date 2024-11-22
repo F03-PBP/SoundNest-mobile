@@ -50,15 +50,15 @@
 
 ### Pembagian Kerja Per Anggota
 - **Henry Aditya Kosasi**:
-
+    WishList
 - **Khairul Bintang**:
-
+    Discussions
 - **Nashwa Ghania Al Zahra**:
-
+    Reviews
 - **Theodore Kevin Himawan**:
-
+    Products
 - **Yosia Joseph Chandra**:
-
+    BeastDeals
 ---
 
 ## 👥 Peran atau Aktor Pengguna Aplikasi
