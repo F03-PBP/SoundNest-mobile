@@ -102,5 +102,6 @@ Baik Anda seorang audiophile berpengalaman atau sekadar mencari peningkatan untu
    - Django akan menggunakan konsep **asynchronous HTTP** untuk meningkatkan efisiensi dalam menangani permintaan dan respons dari aplikasi Flutter.
 
 
-
+## :newspaper: Tautan Tracker Progress :newspaper:
+Link to [Tracker Progress](https://docs.google.com/spreadsheets/d/1dEOh3aSwSjsy7WQsd682m7HUeIamWeOznn74pthFH8I/edit?usp=sharing)
 
