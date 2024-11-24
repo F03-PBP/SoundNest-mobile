@@ -79,7 +79,27 @@ Baik Anda seorang audiophile berpengalaman atau sekadar mencari peningkatan untu
     </ul>
 <div>
 
-# Alur Pengintegrasian dengan Web Service
+# Alur Pengintegrasian dengan Web💾
+
+1. **Konversi Model Django ke Dart**:
+   - Model yang telah didefinisikan di Django akan dikonversi ke dalam aplikasi Flutter dengan mengembalikan data dalam format JSON.
+
+2. **Implementasi REST API di Django**:
+   - Menggunakan `JsonResponse` atau **Django JSON Serializer** di file `views.py` untuk mengembalikan data model dalam format JSON melalui REST API.
+
+3. **Fitur Log In dan Sign Up**:
+   - Menyediakan fitur pendaftaran dan masuk akun di aplikasi Django sebagai bagian dari REST API yang dapat diakses oleh aplikasi Flutter.
+   - Aplikasi mobile Flutter akan melakukan **fetch data** untuk mengelola informasi pengguna.
+
+4. **Integrasi Request dan Pengolahan Data di Flutter**:
+   - Menambahkan fungsi pada Flutter untuk melakukan request HTTP ke URL endpoint Django.
+   - Data yang diterima dari respons REST API akan diolah di aplikasi Flutter.
+
+5. **Desain Front-End Flutter**:
+   - Membuat desain aplikasi mobile Flutter dengan menyesuaikan tampilan dan tema dari desain website Django sebelumnya.
+
+6. **Implementasi Back-End Asynchronous HTTP di Django**:
+   - Django akan menggunakan konsep **asynchronous HTTP** untuk meningkatkan efisiensi dalam menangani permintaan dan respons dari aplikasi Flutter.
 
 
 
