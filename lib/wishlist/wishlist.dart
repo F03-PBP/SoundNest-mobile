@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'wishlist_card.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -13,11 +14,11 @@ class WishlistPage extends StatefulWidget {
 
 class _WishlistPageState extends State<WishlistPage> {
   int _currentPage = 1;
-  final int _itemsPerPage = 6;
+  final int _itemsPerPage = 4;
 
-  // Dummy data list
   List<Map<String, dynamic>> _wishlistData = List.generate(30, (index) {
     return {
+      'id': index,
       'nama_produk': 'Product ${index + 1}',
       'jumlah': (index + 1) % 5 + 1,
       'price': (index + 1) * 100,
@@ -25,14 +26,37 @@ class _WishlistPageState extends State<WishlistPage> {
     };
   });
 
-  // Get the data for the current page
+  int get totalProduk =>
+      _wishlistData.fold(0, (sum, item) => sum + item['jumlah'] as int);
+
+  int get totalHarga =>
+      _wishlistData.fold(0, (sum, item) => sum + (item['jumlah'] * item['price']) as int);
+
   List<Map<String, dynamic>> get _currentPageData {
     int startIndex = (_currentPage - 1) * _itemsPerPage;
     int endIndex = startIndex + _itemsPerPage;
     return _wishlistData.sublist(startIndex, endIndex > _wishlistData.length ? _wishlistData.length : endIndex);
   }
 
-  // Next Page
+  void _updateQuantity(int id, int newJumlah) {
+    setState(() {
+      final item = _wishlistData.firstWhere((item) => item['id'] == id);
+      item['jumlah'] = newJumlah;
+    });
+  }
+
+  void _addNewProduct(String name, int quantity, int price) {
+    setState(() {
+      _wishlistData.add({
+        'id': _wishlistData.length,
+        'nama_produk': name,
+        'jumlah': quantity,
+        'price': price,
+        'date_added': DateTime.now(),
+      });
+    });
+  }
+
   void _nextPage() {
     if ((_currentPage * _itemsPerPage) < _wishlistData.length) {
       setState(() {
@@ -41,13 +65,69 @@ class _WishlistPageState extends State<WishlistPage> {
     }
   }
 
-  // Previous Page
   void _previousPage() {
     if (_currentPage > 1) {
       setState(() {
         _currentPage--;
       });
     }
+  }
+
+  void _openAddProductModal(BuildContext context) {
+    String productName = '';
+    int productQuantity = 1;
+    int productPrice = 0;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add New Product'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: const InputDecoration(labelText: 'Product Name'),
+                onChanged: (value) {
+                  productName = value;
+                },
+              ),
+              TextField(
+                decoration: const InputDecoration(labelText: 'Quantity'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  productQuantity = int.tryParse(value) ?? 1;
+                },
+              ),
+              TextField(
+                decoration: const InputDecoration(labelText: 'Price'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  productPrice = int.tryParse(value) ?? 0;
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (productName.isNotEmpty && productPrice > 0) {
+                  _addNewProduct(productName, productQuantity, productPrice);
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -59,23 +139,42 @@ class _WishlistPageState extends State<WishlistPage> {
       ),
       body: Column(
         children: <Widget>[
+          // Total Produk dan Harga
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Total Produk: $totalProduk', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text('Total Harga: $totalHarga', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                    onPressed: () => _openAddProductModal(context),
+                    child: const Text('Add Product'),
+                  ),
+                ),
+              ],
+            ),
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: _currentPageData.length,
               itemBuilder: (context, index) {
                 var item = _currentPageData[index];
-                return Card(
-                  margin: const EdgeInsets.all(8),
-                  child: ListTile(
-                    title: Text(item['nama_produk']),
-                    subtitle: Text('Quantity: ${item['jumlah']} | Price: ${item['price']}'),
-                    trailing: Text('Added: ${item['date_added'].toString().split(' ')[0]}'),
-                  ),
+                return WishlistCard(
+                  item: item,
+                  onQuantityChanged: (newJumlah) =>
+                      _updateQuantity(item['id'], newJumlah),
                 );
               },
             ),
           ),
-          // Pagination buttons
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
