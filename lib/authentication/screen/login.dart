@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:soundnest_mobile/authentication/models/user_model.dart';
 
 import 'package:soundnest_mobile/authentication/screen/register.dart';
 import 'package:soundnest_mobile/reviews/screen/reviews.dart';
@@ -72,7 +73,12 @@ class _LoginPageState extends State<LoginPage> {
                       if (request.loggedIn) {
                         String message = response['message'];
                         String uname = response['username'];
+                        bool isSuperuser = response['is_superuser'] ?? false;
+
                         if (context.mounted) {
+                          Provider.of<UserModel>(context, listen: false)
+                              .setUser(uname, isSuperuser);
+
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

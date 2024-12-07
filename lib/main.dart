@@ -4,6 +4,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
 import 'package:soundnest_mobile/authentication/screen/logo.dart';
+import 'package:soundnest_mobile/authentication/models/user_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,11 +16,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Provider(
-        create: (_) {
-          CookieRequest request = CookieRequest();
-          return request;
-        },
+    return MultiProvider(
+        providers: [
+          Provider(
+            create: (_) => CookieRequest(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => UserModel(),
+          ),
+        ],
         child: MaterialApp(
           title: 'SoundNest',
           theme: ThemeData(
