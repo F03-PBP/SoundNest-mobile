@@ -3,31 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
-// import 'register.dart';
 import 'package:soundnest_mobile/authentication/screen/register.dart';
 import 'package:soundnest_mobile/reviews/screen/reviews.dart';
-
-void main() {
-  runApp(const LoginApp());
-}
-
-class LoginApp extends StatelessWidget {
-  const LoginApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Login',
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.deepPurple,
-        ).copyWith(secondary: Colors.deepPurple[400]),
-      ),
-      home: const LoginPage(),
-    );
-  }
-}
+import 'package:soundnest_mobile/authentication/widgets/input.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -46,133 +24,130 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       body: Container(
-        color: const Color(0xFFBFDBFE),
-        child: Center(
+        color: Colors.white,
+        child: Align(
+          alignment: Alignment.topLeft,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(52.0),
-            child: Card(
-              elevation: 8,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(44.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
+            padding:
+                const EdgeInsets.only(top: 64, left: 16, right: 16, bottom: 16),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Sign in',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 30.0),
+                  CustomInputField(
+                    labelText: "Username",
+                    hintText: "Enter your username",
+                    controller: _usernameController,
+                  ),
+                  const SizedBox(height: 12.0),
+                  CustomInputField(
+                      labelText: "Password",
+                      hintText: "Enter your password",
+                      controller: _passwordController,
+                      isPassword: true),
+                  const SizedBox(height: 24.0),
+                  ElevatedButton(
+                    onPressed: () async {
+                      String username = _usernameController.text;
+                      String password = _passwordController.text;
+
+                      // Untuk menyambungkan Android emulator dengan Django pada localhost,
+                      // gunakan URL http://10.0.2.2/
+                      final response = await request
+                          .login("http://127.0.0.1:8000/auth/flutter/login/", {
+                        'username': username,
+                        'password': password,
+                      });
+
+                      if (request.loggedIn) {
+                        String message = response['message'];
+                        String uname = response['username'];
+                        if (context.mounted) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MyHomePage()),
+                          );
+                          ScaffoldMessenger.of(context)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(
+                              SnackBar(
+                                  content:
+                                      Text("$message Selamat datang, $uname.")),
+                            );
+                        }
+                      } else {
+                        if (context.mounted) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Login Gagal'),
+                              content: Text(response['message']),
+                              actions: [
+                                TextButton(
+                                  child: const Text('OK'),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 50),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    ),
+                    child: const Text(
                       'Login',
                       style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
-                    const SizedBox(height: 30.0),
-                    TextField(
-                      controller: _usernameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Username',
-                        hintText: 'Enter your username',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 24.0, vertical: 8.0),
-                      ),
-                    ),
-                    const SizedBox(height: 12.0),
-                    TextField(
-                      controller: _passwordController,
-                      decoration: const InputDecoration(
-                        labelText: 'Password',
-                        hintText: 'Enter your password',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 24.0, vertical: 8.0),
-                      ),
-                      obscureText: true,
-                    ),
-                    const SizedBox(height: 24.0),
-                    ElevatedButton(
-                      onPressed: () async {
-                        String username = _usernameController.text;
-                        String password = _passwordController.text;
-
-                        // Untuk menyambungkan Android emulator dengan Django pada localhost,
-                        // gunakan URL http://10.0.2.2/
-                        final response = await request.login(
-                            "https://khairul-bintang-soundnest.pbp.cs.ui.ac.id/auth/login/",
-                            {
-                              'username': username,
-                              'password': password,
-                            });
-
-                        if (request.loggedIn) {
-                          String message = response['message'];
-                          String uname = response['username'];
-                          if (context.mounted) {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const MyHomePage()),
-                            );
-                            ScaffoldMessenger.of(context)
-                              ..hideCurrentSnackBar()
-                              ..showSnackBar(
-                                SnackBar(
-                                    content: Text(
-                                        "$message Selamat datang, $uname.")),
-                              );
-                          }
-                        } else {
-                          if (context.mounted) {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Login Gagal'),
-                                content: Text(response['message']),
-                                actions: [
-                                  TextButton(
-                                    child: const Text('OK'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        minimumSize: const Size(double.infinity, 50),
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      ),
-                      child: const Text('Login'),
-                    ),
-                    const SizedBox(height: 36.0),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const RegisterPage()),
-                        );
-                      },
-                      child: Text(
-                        'Don\'t have an account? Register',
+                  ),
+                  const SizedBox(height: 16.0),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const RegisterPage()),
+                      );
+                    },
+                    child: Text.rich(
+                      TextSpan(
+                        text: 'Don\'t have an account? ', // Teks biasa
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
-                          fontSize: 16.0,
+                          fontSize: 14.0,
                         ),
+                        children: const <TextSpan>[
+                          TextSpan(
+                            text: 'Register', // Teks bold
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
