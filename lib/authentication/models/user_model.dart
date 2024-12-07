@@ -12,4 +12,11 @@ class UserModel with ChangeNotifier {
     _isSuperuser = isSuperuser;
     notifyListeners();
   }
+
+  // LOGOUT
+  void logout() {
+    _username = '';
+    _isSuperuser = false;
+    notifyListeners();
+  }
 }
