@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
-import 'package:soundnest_mobile/authentication/screen/login.dart';
+import 'package:soundnest_mobile/authentication/screen/logo.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             colorScheme: const ColorScheme(
               primary: Color(0xFF362417),
-              primaryContainer: Color(0xFF3B3D77),
+              primaryContainer: Color(0xFFF4F4F4),
               secondary: Color(0xFFF9F1E7),
               secondaryContainer: Color(0xFF3B3D77),
               surface: Colors.white,
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
-          home: const LoginPage(),
+          home: const LogoPage(),
         ));
   }
 }
