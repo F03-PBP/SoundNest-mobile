@@ -8,7 +8,7 @@ class PostCard extends StatelessWidget {
   final DateTime timestamp;
   final VoidCallback onReply;
   final List<ForumPost> replies;
-  final Function(String, ForumPost) onReplyToReply; // Tambahkan callback
+  final Function(String, ForumPost) onReplyToReply; 
 
   const PostCard({
     Key? key,
@@ -17,7 +17,7 @@ class PostCard extends StatelessWidget {
     required this.timestamp,
     required this.onReply,
     required this.replies,
-    required this.onReplyToReply, // Tambahkan parameter ini
+    required this.onReplyToReply, 
   }) : super(key: key);
 
   @override
@@ -45,7 +45,7 @@ class PostCard extends StatelessWidget {
               ...replies.map(
                 (reply) => ReplyCard(
                   reply: reply,
-                  onReplyToReply: onReplyToReply, // Teruskan callback
+                  onReplyToReply: onReplyToReply, 
                 ),
               ),
           ],

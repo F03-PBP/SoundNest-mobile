@@ -2,7 +2,7 @@ class ForumPost {
   final String id;
   final String author;
   final String content;
-  final List<ForumPost> replies; // Mendukung balasan berjenjang
+  final List<ForumPost> replies; 
   final DateTime timestamp;
 
   ForumPost({

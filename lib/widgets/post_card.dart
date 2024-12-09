@@ -8,13 +8,13 @@ class PostCard extends StatelessWidget {
   final VoidCallback onContinue;
 
   const PostCard({
-    Key? key,
+    super.key,
     required this.author,
     required this.content,
     required this.timestamp,
     required this.onReply,
     required this.onContinue,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

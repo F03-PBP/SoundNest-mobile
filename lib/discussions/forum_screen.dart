@@ -171,13 +171,11 @@ class _ForumScreenState extends State<ForumScreen> {
                     IconButton(
                       icon: const Icon(Icons.favorite_border),
                       onPressed: () {
-                        // Handle like action
                       },
                     ),
                     IconButton(
                       icon: const Icon(Icons.share),
                       onPressed: () {
-                        // Handle share action
                       },
                     ),
                   ],

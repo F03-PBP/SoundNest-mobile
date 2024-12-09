@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'discussions/forum_screen.dart'; // Pastikan path ini sesuai dengan struktur direktori Anda
+import 'discussions/forum_screen.dart'; 
 
 void main() {
   runApp(const MyApp());

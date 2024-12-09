@@ -20,9 +20,9 @@ class ReplyForm extends StatelessWidget {
         TextButton(
           onPressed: () {
             if (controller.text.isNotEmpty) {
-              onReplyCreated(postId, controller.text); // Memanggil callback
+              onReplyCreated(postId, controller.text); 
               Navigator.pop(
-                  context); // Menutup dialog setelah balasan ditambahkan
+                  context); 
             }
           },
           child: const Text('Kirim'),

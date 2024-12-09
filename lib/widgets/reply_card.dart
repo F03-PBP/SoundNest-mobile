@@ -6,11 +6,11 @@ class ReplyCard extends StatelessWidget {
   final DateTime timestamp;
 
   const ReplyCard({
-    Key? key,
+    super.key,
     required this.author,
     required this.content,
     required this.timestamp,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
