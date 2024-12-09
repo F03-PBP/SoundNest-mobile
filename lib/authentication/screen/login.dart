@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:soundnest_mobile/authentication/models/user_model.dart';
 
+import 'package:soundnest_mobile/authentication/models/user_model.dart';
 import 'package:soundnest_mobile/authentication/screen/register.dart';
-import 'package:soundnest_mobile/reviews/screen/reviews.dart';
+import 'package:soundnest_mobile/authentication/services/auth_service.dart';
 import 'package:soundnest_mobile/authentication/widgets/input.dart';
+import 'package:soundnest_mobile/reviews/screen/reviews.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -62,42 +62,37 @@ class _LoginPageState extends State<LoginPage> {
                       String username = _usernameController.text;
                       String password = _passwordController.text;
 
-                      // Untuk menyambungkan Android emulator dengan Django pada localhost,
-                      // gunakan URL http://10.0.2.2/
-                      final response = await request
-                          .login("http://127.0.0.1:8000/auth/flutter/login/", {
-                        'username': username,
-                        'password': password,
-                      });
+                      final response = await AuthService.loginUser(
+                          request, username, password);
 
-                      if (request.loggedIn) {
-                        String message = response['message'];
-                        String uname = response['username'];
-                        bool isSuperuser = response['is_superuser'] ?? false;
+                      if (context.mounted) {
+                        if (response['success']) {
+                          String message = response['data']['message'];
+                          String uname = response['data']['username'];
+                          bool isSuperuser =
+                              response['data']['is_superuser'] ?? false;
+                          String userToken = response['data']['token'];
 
-                        if (context.mounted) {
                           Provider.of<UserModel>(context, listen: false)
-                              .setUser(uname, isSuperuser);
+                              .setUser(uname, isSuperuser, userToken);
 
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const MyHomePage()),
+                                builder: (context) => const ReviewsPage()),
                           );
+
                           ScaffoldMessenger.of(context)
                             ..hideCurrentSnackBar()
                             ..showSnackBar(
                               SnackBar(
-                                  content:
-                                      Text("$message Selamat datang, $uname.")),
+                                  content: Text("$message Welcome, $uname.")),
                             );
-                        }
-                      } else {
-                        if (context.mounted) {
+                        } else {
                           showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
-                              title: const Text('Login Gagal'),
+                              title: const Text('Login Failed'),
                               content: Text(response['message']),
                               actions: [
                                 TextButton(

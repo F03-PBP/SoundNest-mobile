@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
-import 'dart:convert';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
 import 'package:soundnest_mobile/authentication/screen/login.dart';
+import 'package:soundnest_mobile/authentication/services/auth_service.dart';
 import 'package:soundnest_mobile/authentication/widgets/input.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -95,17 +94,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       String password1 = _passwordController.text;
                       String password2 = _confirmPasswordController.text;
 
-                      // Untuk menyambungkan Android emulator dengan Django pada localhost,
-                      // gunakan URL http://10.0.2.2/
-                      final response = await request.postJson(
-                          "http://127.0.0.1:8000/auth/flutter/register/",
-                          jsonEncode({
-                            "username": username,
-                            "password1": password1,
-                            "password2": password2,
-                          }));
+                      final response = await AuthService.registerUser(
+                          request, username, password1, password2);
+
                       if (context.mounted) {
-                        if (response['status'] == 'success') {
+                        if (response['success']) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('Successfully registered!'),

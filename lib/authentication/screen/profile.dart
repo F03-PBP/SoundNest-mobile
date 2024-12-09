@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-
+import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
+import 'package:soundnest_mobile/authentication/services/auth_service.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     final userModel = Provider.of<UserModel>(context);
-
     final username = userModel.username;
-    final initials = generateInitials(username);
+    final initials = userModel.initials;
 
     return Scaffold(
       appBar: AppBar(
@@ -59,9 +60,18 @@ class ProfilePage extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               GestureDetector(
-                onTap: () {
-                  userModel.logout();
-                  Navigator.pushReplacementNamed(context, '/login');
+                onTap: () async {
+                  final response = await AuthService.logoutUser(request);
+                  if (context.mounted) {
+                    if (response) {
+                      userModel.logout();
+                      Navigator.pushReplacementNamed(context, '/login');
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Failed to log out.')),
+                      );
+                    }
+                  }
                 },
                 child: const Text(
                   'Sign Out',
@@ -78,12 +88,6 @@ class ProfilePage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String generateInitials(String name) {
-    return name.length >= 2
-        ? name.substring(0, 2).toUpperCase()
-        : name.toUpperCase(); // Jika username hanya 1 karakter
   }
 }
 
