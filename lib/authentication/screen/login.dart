@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
 
 import 'package:soundnest_mobile/authentication/screen/register.dart';
-import 'package:soundnest_mobile/reviews/screen/reviews.dart';
 import 'package:soundnest_mobile/authentication/widgets/input.dart';
+import 'package:soundnest_mobile/wishlist/screen/wishlist.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const MyHomePage()),
+                                builder: (context) => WishlistPage()),
                           );
                           ScaffoldMessenger.of(context)
                             ..hideCurrentSnackBar()
