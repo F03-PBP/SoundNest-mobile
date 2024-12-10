@@ -98,11 +98,57 @@ class _ForumScreenState extends State<ForumScreen> {
     );
   }
 
+  void _showNewPostDialog() {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Tambah Thread Baru'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(hintText: 'Tulis sesuatu...'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                if (controller.text.isNotEmpty) {
+                  _addNewPost(controller.text);
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Kirim'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _addNewPost(String content) {
+    setState(() {
+      posts.add(
+        ForumPost(
+          id: DateTime.now().toString(),
+          author: 'Pengguna',
+          content: content,
+          timestamp: DateTime.now(),
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Forum Diskusi'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: _showNewPostDialog,
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: posts.length,
@@ -110,6 +156,10 @@ class _ForumScreenState extends State<ForumScreen> {
           final post = posts[index];
           return _buildPostCard(post);
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showNewPostDialog,
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -170,13 +220,11 @@ class _ForumScreenState extends State<ForumScreen> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.favorite_border),
-                      onPressed: () {
-                      },
+                      onPressed: () {},
                     ),
                     IconButton(
                       icon: const Icon(Icons.share),
-                      onPressed: () {
-                      },
+                      onPressed: () {},
                     ),
                   ],
                 ),

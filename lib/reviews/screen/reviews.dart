@@ -17,7 +17,6 @@ class MyHomePage extends StatelessWidget {
           'Click Coffee',
           style: TextStyle(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
           ),
         ),
         // Warna latar belakang AppBar diambil dari skema warna tema aplikasi.
@@ -56,7 +55,6 @@ class MyHomePage extends StatelessWidget {
                     child: Text(
                       'Welcome to Click Coffee',
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
                         fontSize: 18.0,
                       ),
                     ),
@@ -103,7 +101,7 @@ class InfoCard extends StatelessWidget {
           children: [
             Text(
               title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(),
             ),
             const SizedBox(height: 8.0),
             Text(content),

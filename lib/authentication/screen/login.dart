@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
 
 import 'package:soundnest_mobile/authentication/screen/register.dart';
+import 'package:soundnest_mobile/discussions/forum_screen.dart';
 import 'package:soundnest_mobile/reviews/screen/reviews.dart';
 import 'package:soundnest_mobile/authentication/widgets/input.dart';
 
@@ -41,7 +42,6 @@ class _LoginPageState extends State<LoginPage> {
                     'Sign in',
                     style: TextStyle(
                       fontSize: 24,
-                      fontWeight: FontWeight.w900,
                     ),
                   ),
                   const SizedBox(height: 30.0),
@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const MyHomePage()),
+                                builder: (context) => const ForumScreen()),
                           );
                           ScaffoldMessenger.of(context)
                             ..hideCurrentSnackBar()
@@ -122,7 +122,6 @@ class _LoginPageState extends State<LoginPage> {
                       'Login',
                       style: TextStyle(
                         fontSize: 14,
-                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),
@@ -145,9 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                         children: const <TextSpan>[
                           TextSpan(
                             text: 'Register', // Teks bold
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: TextStyle(),
                           ),
                         ],
                       ),
