@@ -7,7 +7,9 @@ class ProductCard extends StatelessWidget {
   final double discountedPrice;
   final double rating;
   final int numRatings;
-  final VoidCallback onAddToCart;
+  final int discount;
+  final String timeRemaining;
+  
 
   const ProductCard({
     super.key,
@@ -17,8 +19,29 @@ class ProductCard extends StatelessWidget {
     required this.discountedPrice,
     required this.rating,
     required this.numRatings,
-    required this.onAddToCart,
+    required this.discount,
+    required this.timeRemaining,
   });
+
+  String formatRupiah(double value) {
+    // Convert the number to an integer for formatting without decimals
+    final intValue = value.toInt();
+
+    // Reverse the string representation of the number
+    String reversed = intValue.toString().split('').reversed.join('');
+
+    // Insert dots every three digits
+    String withDots = '';
+    for (int i = 0; i < reversed.length; i++) {
+      if (i > 0 && i % 3 == 0) {
+        withDots += '.';
+      }
+      withDots += reversed[i];
+    }
+
+    // Reverse again to get the final result
+    return 'Rp${withDots.split('').reversed.join('')}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,19 +80,31 @@ class ProductCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      '₹$discountedPrice',
-                      style: const TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          formatRupiah(discountedPrice),
+                          style: const TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 4), // Adjust spacing between discounted and original price if needed
+                        Text(
+                          formatRupiah(originalPrice),
+                          style: const TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.grey,
+                            decoration: TextDecoration.lineThrough,
+                          ),
+                        ),
+                      ],
                     ),
                     Text(
-                      '₹$originalPrice',
+                      '$discount% Off',
                       style: const TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.grey,
-                        decoration: TextDecoration.lineThrough,
+                        fontSize: 12.0,
+                        color: Colors.red,
                       ),
                     ),
                   ],
@@ -93,13 +128,13 @@ class ProductCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: onAddToCart,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
-                    minimumSize: const Size.fromHeight(40.0),
+                Text(
+                  'Sales ends in: $timeRemaining',
+                  style: const TextStyle(
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
                   ),
-                  child: const Text('Add To Cart'),
                 ),
               ],
             ),

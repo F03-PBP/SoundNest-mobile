@@ -1,5 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:soundnest_mobile/BestDeals/models/sale.dart';
 import 'package:soundnest_mobile/BestDeals/widgets/product_card.dart';
+
 
 class BestDealsPage extends StatefulWidget {
   const BestDealsPage({super.key});
@@ -8,70 +12,24 @@ class BestDealsPage extends StatefulWidget {
   State<BestDealsPage> createState() => _BestDealsPageState();
 }
 
-class ProductData {
-    final String imageUrl;
-    final String title;
-    final double originalPrice;
-    final double discountedPrice;
-    final double rating;
-    final int numRatings;
-
-    ProductData({
-      required this.imageUrl,
-      required this.title,
-      required this.originalPrice,
-      required this.discountedPrice,
-      required this.rating,
-      required this.numRatings,
-    });
-  }
-  
 class _BestDealsPageState extends State<BestDealsPage> {
-  // Define the product data
+  late Future<Sale> saleData;
 
-  // Create a list of dummy product data
-  final List<ProductData> dummyProductData = [
-    ProductData(
-      imageUrl: 'https://via.placeholder.com/150',
-      title: 'Product 1',
-      originalPrice: 5099.0,
-      discountedPrice: 3549.0,
-      rating: 4.5,
-      numRatings: 100,
-    ),
-    ProductData(
-      imageUrl: 'https://via.placeholder.com/150',
-      title: 'Product 2',
-      originalPrice: 4799.0,
-      discountedPrice: 3299.0,
-      rating: 4.2,
-      numRatings: 80,
-    ),
-    ProductData(
-      imageUrl: 'https://via.placeholder.com/150',
-      title: 'Product 3',
-      originalPrice: 6499.0,
-      discountedPrice: 4999.0,
-      rating: 4.8,
-      numRatings: 120,
-    ),
-    ProductData(
-      imageUrl: 'https://via.placeholder.com/150',
-      title: 'Product 4',
-      originalPrice: 3999.0,
-      discountedPrice: 2799.0,
-      rating: 4.3,
-      numRatings: 60,
-    ),
-    ProductData(
-      imageUrl: 'https://via.placeholder.com/150',
-      title: 'Product 5',
-      originalPrice: 7999.0,
-      discountedPrice: 6499.0,
-      rating: 4.6,
-      numRatings: 150,
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    saleData = fetchSaleData();  // Fetch the sale data from the API
+  }
+
+  Future<Sale> fetchSaleData() async {
+    final response = await http.get(Uri.parse('http://localhost:8000/best-deals/json/'));
+
+    if (response.statusCode == 200) {
+      return Sale.fromJson(jsonDecode(response.body));  // Parse the JSON response
+    } else {
+      throw Exception('Failed to load sale data');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,33 +37,87 @@ class _BestDealsPageState extends State<BestDealsPage> {
       appBar: AppBar(
         title: const Text('Best Deals'),
       ),
-      body: bestDealsGrid(),
+      body: FutureBuilder<Sale>(
+        future: saleData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (!snapshot.hasData) {
+            return const Center(child: Text('No data available'));
+          }
+
+          // Extract the top picks and least countdown from the fetched data
+          final topPicks = snapshot.data!.topPicks;
+          final leastCountdown = snapshot.data!.leastCountdown;
+
+          return ListView(
+            padding: const EdgeInsets.all(16.0),
+            children: [
+              // Section: Top Picks
+              const SectionHeader(title: 'Top Picks (sorted by rating)'),
+              bestDealsGrid(topPicks),
+
+              // Section: Least Countdown
+              const SectionHeader(title: 'Least Countdown (sorted by time remaining)'),
+              bestDealsGrid(leastCountdown),
+            ],
+          );
+        },
+      ),
     );
   }
 
-  // Create the grid layout
-   Widget bestDealsGrid() {
+  // Create the grid layout for displaying products
+  Widget bestDealsGrid(List<dynamic> productData) {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 16.0,
         mainAxisSpacing: 16.0,
       ),
-      itemCount: dummyProductData.length,
+      itemCount: productData.length,
       itemBuilder: (context, index) {
+        // For each product, cast the dynamic item to SaleItem
+        var item = productData[index];
         return ProductCard(
-          imageUrl: dummyProductData[index].imageUrl,
-          title: dummyProductData[index].title,
-          originalPrice: dummyProductData[index].originalPrice,
-          discountedPrice: dummyProductData[index].discountedPrice,
-          rating: dummyProductData[index].rating,
-          numRatings: dummyProductData[index].numRatings,
-          onAddToCart: () {
-              // Add to cart logic here
-          },
+          imageUrl: 'http://127.0.0.1:8000/static/images/templateimage.webp', // Ensure imageUrl is available in the model
+          title: item.productName,
+          originalPrice: item.originalPrice,
+          discountedPrice: item.price,
+          rating: item.rating,
+          numRatings: item.reviews,
+          discount: item.discount,
+          timeRemaining: item.timeRemaining,  // Format and pass time
         );
       },
-      padding: const EdgeInsets.all(16.0),
+      shrinkWrap: true, // Prevent infinite scroll in nested grids
+      physics: const NeverScrollableScrollPhysics(),
+    );
+  }
+}
+
+// Header for sections
+class SectionHeader extends StatelessWidget {
+  final String title;
+  const SectionHeader({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 18.0,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }

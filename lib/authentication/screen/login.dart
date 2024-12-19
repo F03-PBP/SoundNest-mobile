@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:soundnest_mobile/BestDeals/screens/list_bestdeals.dart';
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
 
 import 'package:soundnest_mobile/authentication/screen/register.dart';
@@ -73,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                       if (request.loggedIn) {
                         String message = response['message'];
                         String uname = response['username'];
-                        bool isSuperuser = response['is_superuser'] ?? false;
+                        bool isSuperuser = response['is_superuser'] ?? true;
 
                         if (context.mounted) {
                           Provider.of<UserModel>(context, listen: false)
@@ -82,14 +83,14 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const MyHomePage()),
+                                builder: (context) => const BestDealsPage()),
                           );
                           ScaffoldMessenger.of(context)
                             ..hideCurrentSnackBar()
                             ..showSnackBar(
                               SnackBar(
                                   content:
-                                      Text("$message Selamat datang, $uname.")),
+                                      Text("$message Selamat datang, $uname dengan role $isSuperuser.")),
                             );
                         }
                       } else {
