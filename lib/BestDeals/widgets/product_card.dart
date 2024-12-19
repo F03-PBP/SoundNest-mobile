@@ -10,7 +10,7 @@ class ProductCard extends StatelessWidget {
   final VoidCallback onAddToCart;
 
   const ProductCard({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.title,
     required this.originalPrice,
@@ -18,7 +18,7 @@ class ProductCard extends StatelessWidget {
     required this.rating,
     required this.numRatings,
     required this.onAddToCart,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +77,7 @@ class ProductCard extends StatelessWidget {
                 const SizedBox(height: 8.0),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.star,
                       color: Colors.amber,
                       size: 20.0,
@@ -96,7 +96,7 @@ class ProductCard extends StatelessWidget {
                 ElevatedButton(
                   onPressed: onAddToCart,
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.redAccent,
+                    backgroundColor: Colors.redAccent,
                     minimumSize: const Size.fromHeight(40.0),
                   ),
                   child: const Text('Add To Cart'),
