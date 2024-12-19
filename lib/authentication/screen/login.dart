@@ -22,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    final userModel = Provider.of<UserModel>(context);
 
     return Scaffold(
       body: Container(
@@ -63,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                       String password = _passwordController.text;
 
                       final response = await AuthService.loginUser(
-                          request, username, password);
+                          request, username, password, userModel);
 
                       if (context.mounted) {
                         if (response['success']) {

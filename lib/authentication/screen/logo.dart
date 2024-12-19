@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:soundnest_mobile/authentication/screen/login.dart';
 
 class LogoPage extends StatefulWidget {
   const LogoPage({super.key});
@@ -9,22 +8,6 @@ class LogoPage extends StatefulWidget {
 }
 
 class _LogoPageState extends State<LogoPage> {
-  @override
-  void initState() {
-    super.initState();
-
-    // Menunggu selama 3 detik sebelum berpindah ke halaman login
-    Future.delayed(const Duration(seconds: 3), () {
-      // Navigasi ke halaman login setelah 3 detik
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
-        );
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

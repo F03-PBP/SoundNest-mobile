@@ -1,12 +1,13 @@
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'dart:convert';
+import 'package:soundnest_mobile/authentication/models/user_model.dart';
 
 class AuthService {
   static const String baseUrl = "http://127.0.0.1:8000/auth/flutter";
 
   // LOGIN
-  static Future<Map<String, dynamic>> loginUser(
-      CookieRequest request, String username, String password) async {
+  static Future<Map<String, dynamic>> loginUser(CookieRequest request,
+      String username, String password, UserModel userModel) async {
     try {
       final response = await request.login('$baseUrl/login/', {
         'username': username,
@@ -14,6 +15,11 @@ class AuthService {
       });
 
       if (request.loggedIn) {
+        userModel.setUser(
+          response['username'],
+          response['is_superuser'],
+          response['token'],
+        );
         return {
           'success': true,
           'data': response,
@@ -66,9 +72,11 @@ class AuthService {
   }
 
   // LOGOUT
-  static Future<bool> logoutUser(CookieRequest request) async {
+  static Future<bool> logoutUser(
+      CookieRequest request, UserModel userModel) async {
     try {
       await request.logout('$baseUrl/logout/');
+      userModel.logout();
       return true;
     } catch (error) {
       return false;

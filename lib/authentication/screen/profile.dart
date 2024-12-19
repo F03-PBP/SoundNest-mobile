@@ -61,7 +61,8 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(height: 12),
               GestureDetector(
                 onTap: () async {
-                  final response = await AuthService.logoutUser(request);
+                  final response =
+                      await AuthService.logoutUser(request, userModel);
                   if (context.mounted) {
                     if (response) {
                       userModel.logout();

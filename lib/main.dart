@@ -7,13 +7,21 @@ import 'package:soundnest_mobile/authentication/models/user_model.dart';
 import 'package:soundnest_mobile/authentication/screen/login.dart';
 import 'package:soundnest_mobile/authentication/screen/logo.dart';
 import 'package:soundnest_mobile/authentication/screen/profile.dart';
+import 'package:soundnest_mobile/reviews/screen/reviews.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final userModel = UserModel();
+  await userModel.loadUser(); // Load user from SharedPreferences
+
+  runApp(MyApp(userModel: userModel));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final UserModel userModel;
+
+  const MyApp({super.key, required this.userModel});
 
   // This widget is the root of your application.
   @override
@@ -23,8 +31,8 @@ class MyApp extends StatelessWidget {
         Provider(
           create: (_) => CookieRequest(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => UserModel(),
+        ChangeNotifierProvider.value(
+          value: userModel,
         ),
       ],
       child: MaterialApp(
@@ -45,12 +53,54 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        home: const LogoPage(),
+        home: const SplashScreen(),
         routes: {
           '/login': (context) => const LoginPage(),
           '/profile': (context) => const ProfilePage(),
+          '/review': (context) => const ReviewsPage(),
         },
       ),
     );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  bool _hasNavigated = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final userModel = Provider.of<UserModel>(context, listen: false);
+    Future.delayed(const Duration(seconds: 3), () async {
+      await userModel.loadUser();
+
+      if (!_hasNavigated && mounted) {
+        setState(() {
+          _hasNavigated = true;
+        });
+
+        final currentRoute = ModalRoute.of(context)?.settings.name;
+        if (userModel.isLoggedIn) {
+          if (currentRoute != '/') {
+            Navigator.pushReplacementNamed(context, '/review');
+          }
+        } else {
+          Navigator.pushReplacementNamed(context, '/login');
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const LogoPage();
   }
 }
