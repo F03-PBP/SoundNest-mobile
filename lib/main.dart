@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
-
 import 'package:soundnest_mobile/authentication/screen/login.dart';
 import 'package:soundnest_mobile/authentication/screen/logo.dart';
 import 'package:soundnest_mobile/authentication/screen/profile.dart';
+import 'package:soundnest_mobile/products/screen/product_page.dart';
+import 'package:soundnest_mobile/navbar/navbar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -45,7 +45,8 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        home: const LogoPage(),
+        //TODO: Ubah ke logo page and authentication (ini ke product page buat ngedebug aja)
+        home: const MainNavigation(),
         routes: {
           '/login': (context) => const LoginPage(),
           '/profile': (context) => const ProfilePage(),
