@@ -1,5 +1,7 @@
+// lib/widgets/post_card.dart
+
 import 'package:flutter/material.dart';
-import '../forum_post.dart';
+import 'package:soundnest_mobile/discussions/forum_post.dart';
 import 'reply_card.dart';
 
 class RandomColorUtil {
@@ -131,6 +133,7 @@ class PostCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Header with avatar, author, timestamp, and menu
             Row(
               children: [
                 CircleAvatar(
@@ -183,8 +186,18 @@ class PostCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
+            // If thread has title, show it
+            if (post.title.isNotEmpty)
+              Text(
+                post.title,
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+            if (post.title.isNotEmpty) const SizedBox(height: 4),
             Text(post.content, style: const TextStyle(fontSize: 14)),
             const SizedBox(height: 12),
+            // Action buttons: like, reply, repost, share
             Row(
               children: [
                 IconButton(
@@ -213,6 +226,7 @@ class PostCard extends StatelessWidget {
                 Text('${post.shares}', style: const TextStyle(fontSize: 12)),
               ],
             ),
+            // Display replies
             if (post.replies.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),

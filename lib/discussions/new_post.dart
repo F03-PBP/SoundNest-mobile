@@ -1,16 +1,18 @@
+// lib/widgets/new_post.dart
+
 import 'package:flutter/material.dart';
 
 class NewPostScreen extends StatelessWidget {
   final TextEditingController controller = TextEditingController();
   final Function(String) onPostCreated;
 
-  NewPostScreen({super.key, required this.onPostCreated});
+  NewPostScreen({Key? key, required this.onPostCreated}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add new thread'),
+        title: const Text('Add New Thread'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -18,7 +20,8 @@ class NewPostScreen extends StatelessWidget {
           children: [
             TextField(
               controller: controller,
-              decoration: const InputDecoration(hintText: 'Write something...'),
+              decoration:
+                  const InputDecoration(hintText: 'Write your thread...'),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
