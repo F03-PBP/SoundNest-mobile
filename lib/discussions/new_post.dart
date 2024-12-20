@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class NewPostScreen extends StatelessWidget {
   final TextEditingController controller = TextEditingController();
-  final Function(String) onPostCreated; 
+  final Function(String) onPostCreated;
 
   NewPostScreen({super.key, required this.onPostCreated});
 
@@ -24,7 +24,7 @@ class NewPostScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 if (controller.text.isNotEmpty) {
-                  onPostCreated(controller.text); 
+                  onPostCreated(controller.text);
                   Navigator.pop(context);
                 }
               },

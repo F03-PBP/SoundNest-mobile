@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 import 'forum_post.dart';
-import 'reply_card.dart';
+import 'widgets/post_card.dart';
+import 'widgets/reply_card.dart';
+import 'package:soundnest_mobile/authentication/models/user_model.dart';
 
 class ForumScreen extends StatefulWidget {
   const ForumScreen({super.key});
@@ -9,47 +13,52 @@ class ForumScreen extends StatefulWidget {
   _ForumScreenState createState() => _ForumScreenState();
 }
 
+class RandomColorUtil {
+  static Color getColorFromName(String name) {
+    final int hash = name.hashCode;
+    final int colorIndex = hash % Colors.primaries.length;
+    return Colors.primaries[colorIndex];
+  }
+}
+
 class _ForumScreenState extends State<ForumScreen> {
   List<ForumPost> posts = [
     ForumPost(
       id: '1',
       author: 'tobi',
-      content:
-          'There are so many great little design touches in threads. Really Great',
-      timestamp: DateTime.now().subtract(const Duration(hours: 7)),
+      content: 'Does anyone know how good the Simgot EW200 is for IEMs?',
+      timestamp: DateTime.now().subtract(const Duration(hours: 5)),
+      likes: 46,
+      reposts: 3,
+      shares: 5,
       replies: [
         ForumPost(
           id: '1-1',
           author: 'h1brd',
-          content:
-              'you can start with @rourkey and @brainsw but there\'s more folks ❤️',
-          timestamp: DateTime.now().subtract(const Duration(hours: 6)),
+          content: 'Start with @rourkey and @brainsw ❤️',
+          timestamp: DateTime.now().subtract(const Duration(hours: 4)),
         ),
       ],
     ),
     ForumPost(
       id: '2',
       author: 'jack',
-      content: 'We wanted flying cars, instead we got 7 Twitter clones.',
-      timestamp: DateTime.now().subtract(const Duration(minutes: 33)),
-    ),
-    ForumPost(
-      id: '3',
-      author: 'mosseri',
-      content:
-          'Here we go. We have lots of work to do, but we\'re looking to build an open, civil place for people to have conversations.',
-      timestamp: DateTime.now().subtract(const Duration(minutes: 33)),
+      content: 'Can anyone recommend a good TWS? I need it for running.',
+      timestamp: DateTime.now().subtract(const Duration(hours: 12)),
+      likes: 61,
+      reposts: 1,
+      shares: 28,
     ),
   ];
 
-  void _addReply(String postId, String replyContent) {
+  void _addReply(String postId, String replyContent, String username) {
     setState(() {
       final postIndex = posts.indexWhere((post) => post.id == postId);
       if (postIndex != -1) {
         posts[postIndex].replies.add(
               ForumPost(
                 id: DateTime.now().toString(),
-                author: 'Replier',
+                author: username,
                 content: replyContent,
                 timestamp: DateTime.now(),
               ),
@@ -58,12 +67,13 @@ class _ForumScreenState extends State<ForumScreen> {
     });
   }
 
-  void _addReplyToReply(String content, ForumPost parentReply) {
+  void _addReplyToReply(
+      String content, ForumPost parentReply, String username) {
     setState(() {
       parentReply.replies.add(
         ForumPost(
           id: DateTime.now().toString(),
-          author: 'Nested Replier',
+          author: username,
           content: content,
           timestamp: DateTime.now(),
         ),
@@ -71,26 +81,75 @@ class _ForumScreenState extends State<ForumScreen> {
     });
   }
 
-  void _showReplyDialog(ForumPost post) {
-    final controller = TextEditingController();
+  void _toggleLike(ForumPost post) {
+    setState(() {
+      post.likedByUser = !post.likedByUser;
+      post.likedByUser ? post.likes++ : post.likes--;
+    });
+  }
+
+  void _repostThread(ForumPost post) {
+    setState(() {
+      post.reposts++;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Reposted thread by ${post.author}')),
+    );
+  }
+
+  void _shareThread(ForumPost post) {
+    setState(() {
+      post.shares++;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Shared thread by ${post.author}')),
+    );
+  }
+
+  void _deletePost(ForumPost post) {
+    setState(() {
+      posts.remove(post);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Thread by ${post.author} deleted')),
+    );
+  }
+
+  void _deleteReply(ForumPost parentPost, ForumPost reply) {
+    setState(() {
+      parentPost.replies.remove(reply);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Reply by ${reply.author} deleted')),
+    );
+  }
+
+  void _editPost(ForumPost post) {
+    final controller = TextEditingController(text: post.content);
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Reply to Post'),
+          title: const Text('Edit Thread'),
           content: TextField(
             controller: controller,
-            decoration: const InputDecoration(hintText: 'Enter your reply'),
+            decoration: const InputDecoration(hintText: 'Edit isi thread...'),
           ),
           actions: [
             TextButton(
               onPressed: () {
-                if (controller.text.isNotEmpty) {
-                  _addReply(post.id, controller.text);
-                  Navigator.pop(context);
-                }
+                setState(() {
+                  post.content = controller.text;
+                });
+                Navigator.pop(context);
               },
-              child: const Text('Reply'),
+              child: const Text('Simpan'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Batal'),
             ),
           ],
         );
@@ -98,7 +157,120 @@ class _ForumScreenState extends State<ForumScreen> {
     );
   }
 
-  void _showNewPostDialog() {
+  void _editReply(ForumPost reply) {
+    final controller = TextEditingController(text: reply.content);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Balasan'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(hintText: 'Edit isi balasan...'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  reply.content = controller.text;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Simpan'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Batal'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _reportPost(ForumPost post) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Reported thread by ${post.author}')),
+    );
+  }
+
+  void _reportReply(ForumPost reply) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Reported reply by ${reply.author}')),
+    );
+  }
+
+  void _showReplyDialog(String postId, String username) {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Balas Postingan'),
+          content: TextField(
+            controller: controller,
+            decoration:
+                const InputDecoration(hintText: 'Tulis balasan Anda...'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                if (controller.text.isNotEmpty) {
+                  _addReply(postId, controller.text, username);
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Kirim'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Batal'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showReplyToReplyDialog(ForumPost parentReply, String username) {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Balas ${parentReply.author}'),
+          content: TextField(
+            controller: controller,
+            decoration:
+                const InputDecoration(hintText: 'Tulis balasan Anda...'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                if (controller.text.isNotEmpty) {
+                  _addReplyToReply(controller.text, parentReply, username);
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Kirim'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Batal'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showNewPostDialog(String username) {
     final controller = TextEditingController();
     showDialog(
       context: context,
@@ -113,7 +285,7 @@ class _ForumScreenState extends State<ForumScreen> {
             TextButton(
               onPressed: () {
                 if (controller.text.isNotEmpty) {
-                  _addNewPost(controller.text);
+                  _addNewPost(controller.text, username);
                   Navigator.pop(context);
                 }
               },
@@ -125,12 +297,12 @@ class _ForumScreenState extends State<ForumScreen> {
     );
   }
 
-  void _addNewPost(String content) {
+  void _addNewPost(String content, String username) {
     setState(() {
       posts.add(
         ForumPost(
           id: DateTime.now().toString(),
-          author: 'Pengguna',
+          author: username,
           content: content,
           timestamp: DateTime.now(),
         ),
@@ -138,15 +310,54 @@ class _ForumScreenState extends State<ForumScreen> {
     });
   }
 
+  Widget _buildPostCard(ForumPost post, String username, bool isSuperuser) {
+    return PostCard(
+      post: post,
+      onReply: (postId) {
+        _showReplyDialog(postId, username);
+      },
+      onReplyToReply: (content, parentReply) {
+        _showReplyToReplyDialog(parentReply, username);
+      },
+      onLikeToggle: _toggleLike,
+      onRepost: _repostThread,
+      onShare: _shareThread,
+      onDelete: (post) => _deletePost(post),
+      onEdit: (post) => _editPost(post),
+      onDeleteReply: _deleteReply,
+      onReport: _reportPost,
+      isSuperuser: isSuperuser,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userModel = Provider.of<UserModel>(context);
+    final username = userModel.username;
+    final isSuperuser = userModel.isSuperuser;
+    print("Logged in as: $username, Is Superuser: $isSuperuser");
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Forum Diskusi'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: _showNewPostDialog,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: GestureDetector(
+              onTap: () => _showNewPostDialog(username),
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.add,
+                  size: 28,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -154,84 +365,8 @@ class _ForumScreenState extends State<ForumScreen> {
         itemCount: posts.length,
         itemBuilder: (context, index) {
           final post = posts[index];
-          return _buildPostCard(post);
+          return _buildPostCard(post, username, isSuperuser);
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showNewPostDialog,
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-
-  Widget _buildPostCard(ForumPost post) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  child: Text(post.author[0].toUpperCase()),
-                ),
-                const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(post.author, style: const TextStyle(fontSize: 16)),
-                    Text(
-                      '${post.timestamp.hour}h ago',
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(post.content, style: const TextStyle(fontSize: 14)),
-            const SizedBox(height: 12),
-            if (post.replies.isNotEmpty)
-              Column(
-                children: post.replies.map((reply) {
-                  return ReplyCard(
-                    reply: reply,
-                    onReplyToReply: (content, parentReply) {
-                      _addReplyToReply(content, parentReply);
-                    },
-                  );
-                }).toList(),
-              ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('${post.replies.length} replies • 112 likes',
-                    style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.reply),
-                      onPressed: () {
-                        _showReplyDialog(post);
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.favorite_border),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.share),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }
