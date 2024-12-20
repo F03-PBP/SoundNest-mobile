@@ -52,7 +52,7 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
           );
         } else {
           return GridView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 16,
@@ -80,16 +80,15 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(
-                            16.0), // Add padding around the image
+                            20.0), // Add padding around the image
                         child: ClipRRect(
                           borderRadius: const BorderRadius.vertical(
                               top: Radius.circular(
-                                  16)), // Rounded corners for the image
+                                  20)), // Rounded corners for the image
                           child: Image.asset(
                             'assets/images/templateimage.png', // Replace with actual product image URL
-                            fit: BoxFit.cover,
+                            fit: BoxFit.contain,
                             width: double.infinity,
-                            height: double.infinity,
                           ),
                         ),
                       ),
