@@ -55,6 +55,8 @@ class UserModel with ChangeNotifier {
     _userToken = prefs.getString('userToken') ?? '';
     _initials = generateInitials(_username);
 
+    // Call notifyListeners jika token valid
+    // notifyListeners = menghubungkan perubahan data dengan UI agar diperbarui secara otomatis.
     if (_userToken.isNotEmpty) {
       notifyListeners();
     }

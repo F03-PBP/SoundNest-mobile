@@ -1,9 +1,11 @@
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'dart:convert';
+
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
 
 class AuthService {
-  static const String baseUrl = "http://127.0.0.1:8000/auth/flutter";
+  static const String baseUrl =
+      "http://127.0.0.1:8000/auth/flutter"; // TODO: Ganti ke PWS
 
   // LOGIN
   static Future<Map<String, dynamic>> loginUser(CookieRequest request,

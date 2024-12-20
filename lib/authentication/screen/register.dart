@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:soundnest_mobile/authentication/screen/login.dart';
 import 'package:soundnest_mobile/authentication/services/auth_service.dart';
 import 'package:soundnest_mobile/authentication/widgets/input.dart';
+import 'package:soundnest_mobile/widgets/toast.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -94,34 +95,28 @@ class _RegisterPageState extends State<RegisterPage> {
                       String password1 = _passwordController.text;
                       String password2 = _confirmPasswordController.text;
 
+                      // AuthService
                       final response = await AuthService.registerUser(
                           request, username, password1, password2);
 
                       if (context.mounted) {
                         if (response['success']) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Successfully registered!'),
-                            ),
-                          );
+                          Toast.success(context, 'Successfully registered!');
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => const LoginPage()),
                           );
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Failed to register!'),
-                            ),
-                          );
+                          Toast.error(context, 'Failed to register!');
                         }
                       }
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
                       minimumSize: const Size(double.infinity, 50),
-                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundColor:
+                          Theme.of(context).colorScheme.secondaryContainer,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
                     child: const Text('Register'),
