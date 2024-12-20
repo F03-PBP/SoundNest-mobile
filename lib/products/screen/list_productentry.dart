@@ -14,9 +14,10 @@ class ProductEntryCards extends StatefulWidget {
 class _ProductEntryCardsState extends State<ProductEntryCards> {
   Future<List<ProductEntry>> fetchProducts(CookieRequest request) async {
     try {
+      // Ini nanti diubah aja pas udh push pws yg updated
       final response = await request.get('http://localhost:8000/api/products/');
 
-      // Debug: Print the response to ensure it's correct
+      // For debugging
       print('API Response: $response');
 
       List<ProductEntry> listProduct = [];
@@ -64,12 +65,12 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
               return Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.1),
-                      blurRadius: 6,
-                      spreadRadius: 2,
+                      blurRadius: 4,
+                      spreadRadius: 1,
                     ),
                   ],
                 ),
@@ -77,18 +78,24 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(8)),
-                        child: Image.network(
-                          'https://via.placeholder.com/150', // Replace with actual product image URL
-                          fit: BoxFit.cover,
-                          width: double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.all(
+                            16.0), // Add padding around the image
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(
+                                  16)), // Rounded corners for the image
+                          child: Image.asset(
+                            'assets/images/templateimage.png', // Replace with actual product image URL
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: double.infinity,
+                          ),
                         ),
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -105,8 +112,9 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                           Text(
                             'Rp${product.price}',
                             style: GoogleFonts.inter(
-                              fontSize: 14,
-                              color: Colors.grey[700],
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
                             ),
                           ),
                           const SizedBox(height: 4),

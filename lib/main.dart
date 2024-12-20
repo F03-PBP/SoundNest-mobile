@@ -6,6 +6,7 @@ import 'package:soundnest_mobile/authentication/screen/login.dart';
 import 'package:soundnest_mobile/authentication/screen/logo.dart';
 import 'package:soundnest_mobile/authentication/screen/profile.dart';
 import 'package:soundnest_mobile/products/screen/product_page.dart';
+import 'package:soundnest_mobile/navbar/navbar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,7 +45,8 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        home: const ProductPage(),
+        //TODO: Ubah ke logo page and authentication (ini ke product page buat ngedebug aja)
+        home: const MainNavigation(),
         routes: {
           '/login': (context) => const LoginPage(),
           '/profile': (context) => const ProfilePage(),
