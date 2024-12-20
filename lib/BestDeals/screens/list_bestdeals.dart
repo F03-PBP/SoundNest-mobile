@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:soundnest_mobile/BestDeals/models/sale.dart';
 import 'package:soundnest_mobile/BestDeals/widgets/product_card.dart';
-
+import 'package:soundnest_mobile/BestDeals/screens/add_to_deals_page.dart'; // Add this import
 
 class BestDealsPage extends StatefulWidget {
   const BestDealsPage({super.key});
@@ -18,14 +18,14 @@ class _BestDealsPageState extends State<BestDealsPage> {
   @override
   void initState() {
     super.initState();
-    saleData = fetchSaleData();  // Fetch the sale data from the API
+    saleData = fetchSaleData();
   }
 
   Future<Sale> fetchSaleData() async {
     final response = await http.get(Uri.parse('http://localhost:8000/best-deals/json/'));
 
     if (response.statusCode == 200) {
-      return Sale.fromJson(jsonDecode(response.body));  // Parse the JSON response
+      return Sale.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load sale data');
     }
@@ -52,18 +52,42 @@ class _BestDealsPageState extends State<BestDealsPage> {
             return const Center(child: Text('No data available'));
           }
 
-          // Extract the top picks and least countdown from the fetched data
           final topPicks = snapshot.data!.topPicks;
           final leastCountdown = snapshot.data!.leastCountdown;
 
           return ListView(
             padding: const EdgeInsets.all(16.0),
             children: [
-              // Section: Top Picks
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddToDealsPage(),
+                        ),
+                      ).then((_) {
+                        // Refresh the deals list when returning from add page
+                        setState(() {
+                          saleData = fetchSaleData();
+                        });
+                      });
+                    },
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add to Deals'),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16.0),
+
               const SectionHeader(title: 'Top Picks (sorted by rating)'),
               bestDealsGrid(topPicks),
 
-              // Section: Least Countdown
               const SectionHeader(title: 'Least Countdown (sorted by time remaining)'),
               bestDealsGrid(leastCountdown),
             ],
@@ -73,7 +97,6 @@ class _BestDealsPageState extends State<BestDealsPage> {
     );
   }
 
-  // Create the grid layout for displaying products
   Widget bestDealsGrid(List<dynamic> productData) {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -83,26 +106,24 @@ class _BestDealsPageState extends State<BestDealsPage> {
       ),
       itemCount: productData.length,
       itemBuilder: (context, index) {
-        // For each product, cast the dynamic item to SaleItem
         var item = productData[index];
         return ProductCard(
-          imageUrl: 'http://127.0.0.1:8000/static/images/templateimage.webp', // Ensure imageUrl is available in the model
+          imageUrl: 'http://127.0.0.1:8000/static/images/templateimage.webp',
           title: item.productName,
           originalPrice: item.originalPrice,
           discountedPrice: item.price,
           rating: item.rating,
           numRatings: item.reviews,
           discount: item.discount,
-          timeRemaining: item.timeRemaining,  // Format and pass time
+          timeRemaining: item.timeRemaining,
         );
       },
-      shrinkWrap: true, // Prevent infinite scroll in nested grids
+      shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
     );
   }
 }
 
-// Header for sections
 class SectionHeader extends StatelessWidget {
   final String title;
   const SectionHeader({super.key, required this.title});
