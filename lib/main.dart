@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
@@ -23,7 +22,6 @@ class MyApp extends StatelessWidget {
 
   const MyApp({super.key, required this.userModel});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -41,8 +39,8 @@ class MyApp extends StatelessWidget {
           colorScheme: const ColorScheme(
             primary: Color(0xFF362417),
             primaryContainer: Color(0xFFF4F4F4),
-            secondary: Color(0xFFF9F1E7),
-            secondaryContainer: Color(0xFF3B3D77),
+            secondary: Color(0xFFC5A684),
+            secondaryContainer: Color(0xFF958069),
             surface: Colors.white,
             error: Colors.red,
             onPrimary: Colors.white,
@@ -53,11 +51,12 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        home: const SplashScreen(),
+        home: const LogoPage(),
         routes: {
           '/login': (context) => const LoginPage(),
           '/profile': (context) => const ProfilePage(),
-          '/review': (context) => const ReviewsPage(),
+          '/review': (context) => const ReviewsPage(
+              productId: 'e87e8646-7fc1-429a-ad46-50349e44a99f'),
         },
       ),
     );
@@ -72,35 +71,40 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  bool _hasNavigated = false;
+  late Future<void> _loadUserFuture;
 
   @override
   void initState() {
     super.initState();
-
     final userModel = Provider.of<UserModel>(context, listen: false);
-    Future.delayed(const Duration(seconds: 3), () async {
+    _loadUserFuture = Future.delayed(const Duration(seconds: 3), () async {
       await userModel.loadUser();
-
-      if (!_hasNavigated && mounted) {
-        setState(() {
-          _hasNavigated = true;
-        });
-
-        final currentRoute = ModalRoute.of(context)?.settings.name;
-        if (userModel.isLoggedIn) {
-          if (currentRoute != '/') {
-            Navigator.pushReplacementNamed(context, '/review');
-          }
-        } else {
-          Navigator.pushReplacementNamed(context, '/login');
-        }
-      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return const LogoPage();
+    return FutureBuilder(
+      future: _loadUserFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const LogoPage(); // LogoPage on loading
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          final userModel = Provider.of<UserModel>(context, listen: false);
+          if (userModel.isLoggedIn) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.pushReplacementNamed(context, '/review');
+            });
+          } else {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.pushReplacementNamed(context, '/login');
+            });
+          }
+          return const SizedBox.shrink();
+        } else {
+          return const LogoPage();
+        }
+      },
+    );
   }
 }
