@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                       if (request.loggedIn) {
                         String message = response['message'];
                         String uname = response['username'];
-                        bool isSuperuser = response['is_superuser'] ?? true;
+                        bool isSuperuser = response['is_superuser'] ?? false;
 
                         if (context.mounted) {
                           Provider.of<UserModel>(context, listen: false)

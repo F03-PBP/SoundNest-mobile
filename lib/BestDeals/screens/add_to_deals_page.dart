@@ -22,6 +22,7 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
   List<AvailableProduct> _availableProducts = [];
   List<AvailableProduct> _filteredProducts = [];
   String _selectedPriceRange = 'All';
+  String _selectedRatingRange = 'All';
   AvailableProduct? _selectedProduct;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
@@ -34,6 +35,14 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
     '500k to 1.5M',
     '1.5M to 3M',
     'Above 3M'
+  ];
+
+  // Rating range options
+  final List<String> _ratingRanges = [
+    'All',
+    '8 to 10',
+    '6 to 8',
+    'Below 6',
   ];
 
   @override
@@ -92,7 +101,22 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
           priceMatch = product.price >= 3000000;
           break;
       }
-      return searchMatch && priceMatch;
+
+      // Apply rating range filter
+      bool ratingMatch = true;
+      switch (_selectedRatingRange) {
+        case '8 to 10':
+          ratingMatch = product.rating >= 8 && product.rating <= 10;
+          break;
+        case '6 to 8':
+          ratingMatch = product.rating >= 6 && product.rating < 8;
+          break;
+        case 'Below 6':
+          ratingMatch = product.rating < 6;
+          break;
+      }
+
+      return searchMatch && priceMatch && ratingMatch;
     }).toList();
 
     setState(() => _filteredProducts = filtered);
@@ -195,25 +219,57 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
               ),
               const SizedBox(height: 8),
               
-              DropdownButtonFormField<String>(
-                value: _selectedPriceRange,
-                decoration: const InputDecoration(
-                  labelText: 'Filter by Price Range',
-                ),
-                items: _priceRanges.map((String range) {
-                  return DropdownMenuItem(
-                    value: range,
-                    child: Text(range),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
-                    setState(() {
-                      _selectedPriceRange = newValue;
-                      _filterProducts();
-                    });
-                  }
-                },
+              Row(
+                children: [
+                  // Price Range Filter
+                  Expanded(
+                    child: DropdownButtonFormField<String>(
+                      value: _selectedPriceRange,
+                      decoration: const InputDecoration(
+                        labelText: 'Filter by Price',
+                      ),
+                      items: _priceRanges.map((String range) {
+                        return DropdownMenuItem(
+                          value: range,
+                          child: Text(range),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            _selectedPriceRange = newValue;
+                            _filterProducts();
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8), // Add space between filters
+
+                  // Rating Range Filter
+                  Expanded(
+                    child: DropdownButtonFormField<String>(
+                      value: _selectedRatingRange,
+                      decoration: const InputDecoration(
+                        labelText: 'Filter by Rating',
+                      ),
+                      items: _ratingRanges.map((String range) {
+                        return DropdownMenuItem(
+                          value: range,
+                          child: Text(range),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            _selectedRatingRange = newValue;
+                            _filterProducts();
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
 
@@ -249,6 +305,13 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
                                     symbol: 'Rp ',
                                     decimalDigits: 0,
                                   ).format(product.price)}',
+                                ),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.star, color: Colors.amber), // Optional star icon
+                                    Text(product.rating.toStringAsFixed(1)), // Display rating
+                                  ],
                                 ),
                                 selected: isSelected,
                                 onTap: () {
