@@ -10,7 +10,7 @@ class NewPostScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tambah Posting Baru'),
+        title: const Text('Add new thread'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -18,7 +18,7 @@ class NewPostScreen extends StatelessWidget {
           children: [
             TextField(
               controller: controller,
-              decoration: const InputDecoration(hintText: 'Tulis sesuatu...'),
+              decoration: const InputDecoration(hintText: 'Write something...'),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -28,7 +28,7 @@ class NewPostScreen extends StatelessWidget {
                   Navigator.pop(context);
                 }
               },
-              child: const Text('Kirim'),
+              child: const Text('Send'),
             ),
           ],
         ),

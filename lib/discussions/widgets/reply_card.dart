@@ -18,7 +18,6 @@ class ReplyCard extends StatelessWidget {
   final Function(ForumPost) onShare;
   final Function(String, ForumPost) onReplyToReply;
   final Function(ForumPost) onEdit;
-  final Function(ForumPost) onReport;
   final bool isSuperuser;
 
   const ReplyCard({
@@ -31,9 +30,91 @@ class ReplyCard extends StatelessWidget {
     required this.onShare,
     required this.onReplyToReply,
     required this.onEdit,
-    required this.onReport,
     required this.isSuperuser,
   }) : super(key: key);
+
+  void _showReportDialog(BuildContext context) {
+    final List<String> reasons = [
+      "Bahasa tidak senonoh",
+      "Spam",
+      "Konten tidak relevan",
+      "Pelanggaran aturan komunitas"
+    ];
+    final List<bool> isSelected = List.filled(reasons.length + 1, false);
+    final TextEditingController otherReasonController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text("Report Reply"),
+              content: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ...List.generate(reasons.length, (index) {
+                      return CheckboxListTile(
+                        title: Text(reasons[index]),
+                        value: isSelected[index],
+                        onChanged: (value) {
+                          setState(() {
+                            isSelected[index] = value!;
+                          });
+                        },
+                      );
+                    }),
+                    CheckboxListTile(
+                      title: const Text("Other"),
+                      value: isSelected.last,
+                      onChanged: (value) {
+                        setState(() {
+                          isSelected[isSelected.length - 1] = value!;
+                        });
+                      },
+                    ),
+                    if (isSelected.last)
+                      TextField(
+                        controller: otherReasonController,
+                        decoration: const InputDecoration(
+                          labelText: "Explain other reason",
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    List<String> selectedReasons = [];
+                    for (int i = 0; i < reasons.length; i++) {
+                      if (isSelected[i]) {
+                        selectedReasons.add(reasons[i]);
+                      }
+                    }
+                    if (isSelected.last) {
+                      selectedReasons
+                          .add("Other: ${otherReasonController.text}");
+                    }
+                    print("Reported reasons: $selectedReasons");
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Submit"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +152,7 @@ class ReplyCard extends StatelessWidget {
                   PopupMenuButton<String>(
                     onSelected: (value) {
                       if (value == 'report') {
-                        onReport(reply);
+                        _showReportDialog(context);
                       }
                     },
                     itemBuilder: (context) => [
@@ -101,6 +182,7 @@ class ReplyCard extends StatelessWidget {
               Text(reply.content, style: const TextStyle(fontSize: 14)),
               const SizedBox(height: 8),
               Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   IconButton(
                     icon: Icon(
@@ -145,7 +227,6 @@ class ReplyCard extends StatelessWidget {
                         onShare: onShare,
                         onReplyToReply: onReplyToReply,
                         onEdit: onEdit,
-                        onReport: onReport,
                         isSuperuser: isSuperuser,
                       );
                     }).toList(),

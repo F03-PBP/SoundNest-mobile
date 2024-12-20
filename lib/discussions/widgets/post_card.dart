@@ -38,6 +38,90 @@ class PostCard extends StatelessWidget {
     required this.isSuperuser,
   }) : super(key: key);
 
+  void _showReportDialog(BuildContext context) {
+    final List<String> reasons = [
+      "Bahasa tidak senonoh",
+      "Spam",
+      "Konten tidak relevan",
+      "Pelanggaran aturan komunitas"
+    ];
+    final List<bool> isSelected = List.filled(reasons.length + 1, false);
+    final TextEditingController otherReasonController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text("Report Thread"),
+              content: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ...List.generate(reasons.length, (index) {
+                      return CheckboxListTile(
+                        title: Text(reasons[index]),
+                        value: isSelected[index],
+                        onChanged: (value) {
+                          setState(() {
+                            isSelected[index] = value!;
+                          });
+                        },
+                      );
+                    }),
+                    CheckboxListTile(
+                      title: const Text("Other"),
+                      value: isSelected.last,
+                      onChanged: (value) {
+                        setState(() {
+                          isSelected[isSelected.length - 1] = value!;
+                        });
+                      },
+                    ),
+                    if (isSelected.last)
+                      TextField(
+                        controller: otherReasonController,
+                        decoration: const InputDecoration(
+                          labelText: "Explain other reason",
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    List<String> selectedReasons = [];
+                    for (int i = 0; i < reasons.length; i++) {
+                      if (isSelected[i]) {
+                        selectedReasons.add(reasons[i]);
+                      }
+                    }
+                    if (isSelected.last) {
+                      selectedReasons
+                          .add("Other: ${otherReasonController.text}");
+                    }
+                    print("Reported reasons: $selectedReasons");
+                    onReport(post);
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Submit"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -72,7 +156,7 @@ class PostCard extends StatelessWidget {
                 PopupMenuButton<String>(
                   onSelected: (value) {
                     if (value == 'report') {
-                      onReport(post);
+                      _showReportDialog(context);
                     }
                   },
                   itemBuilder: (context) => [
@@ -143,7 +227,6 @@ class PostCard extends StatelessWidget {
                       onShare: onShare,
                       onReplyToReply: onReplyToReply,
                       onEdit: onEdit,
-                      onReport: onReport,
                       isSuperuser: isSuperuser,
                     );
                   }).toList(),

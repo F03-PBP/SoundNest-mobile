@@ -11,21 +11,20 @@ class ReplyForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Balas Postingan'),
+      title: const Text('Reply'),
       content: TextField(
         controller: controller,
-        decoration: const InputDecoration(hintText: 'Tulis balasan...'),
+        decoration: const InputDecoration(hintText: 'Reply...'),
       ),
       actions: [
         TextButton(
           onPressed: () {
             if (controller.text.isNotEmpty) {
-              onReplyCreated(postId, controller.text); 
-              Navigator.pop(
-                  context); 
+              onReplyCreated(postId, controller.text);
+              Navigator.pop(context);
             }
           },
-          child: const Text('Kirim'),
+          child: const Text('Send'),
         ),
       ],
     );

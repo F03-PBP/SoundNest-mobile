@@ -133,7 +133,7 @@ class _ForumScreenState extends State<ForumScreen> {
           title: const Text('Edit Thread'),
           content: TextField(
             controller: controller,
-            decoration: const InputDecoration(hintText: 'Edit isi thread...'),
+            decoration: const InputDecoration(hintText: 'Edit thread...'),
           ),
           actions: [
             TextButton(
@@ -143,13 +143,13 @@ class _ForumScreenState extends State<ForumScreen> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('Simpan'),
+              child: const Text('Save'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Batal'),
+              child: const Text('Cancel'),
             ),
           ],
         );
@@ -163,10 +163,10 @@ class _ForumScreenState extends State<ForumScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Edit Balasan'),
+          title: const Text('Edit'),
           content: TextField(
             controller: controller,
-            decoration: const InputDecoration(hintText: 'Edit isi balasan...'),
+            decoration: const InputDecoration(hintText: 'Edit the reply...'),
           ),
           actions: [
             TextButton(
@@ -176,13 +176,13 @@ class _ForumScreenState extends State<ForumScreen> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('Simpan'),
+              child: const Text('Save'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Batal'),
+              child: const Text('Cancel'),
             ),
           ],
         );
@@ -208,11 +208,10 @@ class _ForumScreenState extends State<ForumScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Balas Postingan'),
+          title: const Text('Reply to the thread'),
           content: TextField(
             controller: controller,
-            decoration:
-                const InputDecoration(hintText: 'Tulis balasan Anda...'),
+            decoration: const InputDecoration(hintText: 'Write your reply...'),
           ),
           actions: [
             TextButton(
@@ -222,13 +221,13 @@ class _ForumScreenState extends State<ForumScreen> {
                   Navigator.pop(context);
                 }
               },
-              child: const Text('Kirim'),
+              child: const Text('Send'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Batal'),
+              child: const Text('Cancel'),
             ),
           ],
         );
@@ -242,11 +241,10 @@ class _ForumScreenState extends State<ForumScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Balas ${parentReply.author}'),
+          title: Text('Reply ${parentReply.author}'),
           content: TextField(
             controller: controller,
-            decoration:
-                const InputDecoration(hintText: 'Tulis balasan Anda...'),
+            decoration: const InputDecoration(hintText: 'Write your reply...'),
           ),
           actions: [
             TextButton(
@@ -256,13 +254,13 @@ class _ForumScreenState extends State<ForumScreen> {
                   Navigator.pop(context);
                 }
               },
-              child: const Text('Kirim'),
+              child: const Text('Send'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Batal'),
+              child: const Text('Cancel'),
             ),
           ],
         );
@@ -276,10 +274,11 @@ class _ForumScreenState extends State<ForumScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Tambah Thread Baru'),
+          title: const Text('Add threads'),
           content: TextField(
             controller: controller,
-            decoration: const InputDecoration(hintText: 'Tulis sesuatu...'),
+            decoration:
+                const InputDecoration(hintText: 'Write your thoughts...'),
           ),
           actions: [
             TextButton(
@@ -339,7 +338,7 @@ class _ForumScreenState extends State<ForumScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Forum Diskusi'),
+        title: const Text('Discussion Forums'),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
