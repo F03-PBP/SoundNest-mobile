@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
-import 'package:soundnest_mobile/authentication/screen/login.dart';
 import 'package:soundnest_mobile/authentication/screen/logo.dart';
-import 'package:soundnest_mobile/authentication/screen/profile.dart';
-import 'package:soundnest_mobile/reviews/screen/reviews.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,12 +48,6 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: const LogoPage(),
-        routes: {
-          '/login': (context) => const LoginPage(),
-          '/profile': (context) => const ProfilePage(),
-          '/review': (context) => const ReviewsPage(
-              productId: 'e87e8646-7fc1-429a-ad46-50349e44a99f'),
-        },
       ),
     );
   }
