@@ -60,8 +60,17 @@ class ProductPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.secondaryContainer,
+                  Theme.of(context).colorScheme.secondary,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
             width: double.infinity,
-            color: const Color(0xFF362417),
             padding: const EdgeInsets.fromLTRB(24, 110, 16, 28),
             child: const Text(
               'Products',
