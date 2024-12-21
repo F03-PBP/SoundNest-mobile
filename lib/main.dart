@@ -50,8 +50,7 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        //TODO: Ubah ke logo page and authentication (ini ke product page buat ngedebug aja)
-        home: const MainNavigation(),
+        home: const LogoPage(),
         routes: {
           '/login': (context) => const LoginPage(),
           '/profile': (context) => const ProfilePage(),

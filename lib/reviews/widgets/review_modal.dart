@@ -86,7 +86,7 @@ class _ReviewModalState extends State<ReviewModal> {
   Widget build(BuildContext context) {
     return Dialog(
       child: Padding(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.all(26.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -95,11 +95,11 @@ class _ReviewModalState extends State<ReviewModal> {
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            Wrap(
-              alignment: WrapAlignment.center,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(10, (index) {
-                return Padding(
-                  padding: EdgeInsets.zero, // Remove the default padding
+                return Expanded(
+                  // Proporsional
                   child: IconButton(
                     icon: Icon(
                       Icons.star,

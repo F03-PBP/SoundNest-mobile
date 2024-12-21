@@ -145,11 +145,13 @@ class _ToastWidgetState extends State<_ToastWidget>
   }
 
   Widget _buildMessage() {
-    return Text(
-      widget.message,
-      style: TextStyle(
-          color: widget.textColor, fontSize: 14, fontWeight: FontWeight.bold),
-      textAlign: TextAlign.center,
+    return Flexible(
+      child: Text(
+        widget.message,
+        style: TextStyle(
+            color: widget.textColor, fontSize: 14, fontWeight: FontWeight.bold),
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }

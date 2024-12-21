@@ -43,11 +43,15 @@ class ReviewCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8.0),
                 Text(
-                  productName,
+                  productName.length > 20
+                      ? '${productName.substring(0, 20)}...'
+                      : productName,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
+                  overflow: TextOverflow.ellipsis, // Text overflow "..."
+                  maxLines: 1,
                 ),
               ],
             ),

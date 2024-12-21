@@ -26,6 +26,10 @@ class _LoginPageState extends State<LoginPage> {
     final userModel = Provider.of<UserModel>(context);
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+      ),
       body: Container(
         color: Colors.white,
         child: Align(
