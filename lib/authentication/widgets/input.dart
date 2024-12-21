@@ -29,7 +29,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
   Widget build(BuildContext context) {
     Widget inputWidget;
 
-    // Jika menggunakan TextFormField, gunakan validator dan controller
+    // Jika pakai TextFormField, ada validator dan controller
     if (widget.useTextFormField) {
       inputWidget = TextFormField(
         controller: widget.controller,
@@ -74,7 +74,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
         },
       );
     } else {
-      // Jika menggunakan TextField, tanpa validator
+      // Jika pakai TextField, tanpa validator
       inputWidget = TextField(
         controller: widget.controller,
         obscureText: widget.isPassword ? _obscureText : false,
