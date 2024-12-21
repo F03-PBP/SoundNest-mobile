@@ -4,10 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:soundnest_mobile/BestDeals/screens/list_bestdeals.dart';
 
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
-import 'package:soundnest_mobile/authentication/screen/profile.dart';
+
 import 'package:soundnest_mobile/authentication/screen/register.dart';
 import 'package:soundnest_mobile/authentication/services/auth_service.dart';
 import 'package:soundnest_mobile/authentication/widgets/input.dart';
+import 'package:soundnest_mobile/navbar/navbar.dart';
 import 'package:soundnest_mobile/widgets/toast.dart';
 
 class LoginPage extends StatefulWidget {
@@ -89,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const BestDealsPage()),
+                                builder: (context) => const MainNavigation()),
                           );
 
                           Toast.success(context, "$message Welcome, $uname!");
