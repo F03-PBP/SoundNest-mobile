@@ -47,7 +47,6 @@ class _LoginPageState extends State<LoginPage> {
                     'Sign in',
                     style: TextStyle(
                       fontSize: 24,
-                      fontWeight: FontWeight.w900,
                     ),
                   ),
                   const SizedBox(height: 30.0),
@@ -111,7 +110,6 @@ class _LoginPageState extends State<LoginPage> {
                       'Login',
                       style: TextStyle(
                         fontSize: 14,
-                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),

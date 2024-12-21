@@ -61,7 +61,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     'Register',
                     style: TextStyle(
                       fontSize: 24,
-                      fontWeight: FontWeight.w900,
                     ),
                   ),
                   const SizedBox(height: 30.0),

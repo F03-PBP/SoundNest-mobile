@@ -51,7 +51,6 @@ class _LogoPageState extends State<LogoPage> {
             style: TextStyle(
               color: Colors.white,
               fontSize: 24.0,
-              fontWeight: FontWeight.bold,
               fontFamily: 'Inter',
             ),
           ),
