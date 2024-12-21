@@ -42,7 +42,7 @@ class DealsCarouselItem extends StatelessWidget {
                   bottomLeft: Radius.circular(8.0),
                 ),
                 child: Image.asset(
-                  'assets/images/templateimage.png',
+                  'assets/images/1.png',
                   fit: BoxFit.contain,
                   height: double.infinity,
                 )
@@ -736,7 +736,7 @@ class _BestDealsPageState extends State<BestDealsPage> {
           return LayoutBuilder(
             builder: (context, constraints) {
               return ProductCard(
-                imageUrl: 'assets/images/templateimage.png',
+                imageUrl: 'assets/images/1.png',
                 title: item.productName,
                 originalPrice: item.originalPrice.toDouble(),
                 discountedPrice: item.price.toDouble(),
