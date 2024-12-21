@@ -197,7 +197,12 @@ class _WishlistPageState extends State<WishlistPage> {
                               },
                               child: const Text('Add New Product'),
                             ),
-                            // Dropdown untuk sort option
+                            ElevatedButton(
+                              onPressed: () {
+                                setState(() {});
+                              },
+                              child: const Text('Refresh'),
+                            ),
                             DropdownButton<String>(
                               value: _sortOption,
                               items: ["Price (asc)", "Quantity (asc)", "Price (desc)", "Quantity (desc)"]
