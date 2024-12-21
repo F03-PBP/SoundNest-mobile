@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+
 import 'package:soundnest_mobile/BestDeals/models/sale.dart';
 import 'package:soundnest_mobile/BestDeals/widgets/product_card.dart';
 import 'package:soundnest_mobile/BestDeals/screens/add_to_deals_page.dart';
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
+import 'package:soundnest_mobile/widgets/toast.dart';
 
 class DealsCarouselItem extends StatelessWidget {
   final dynamic product;
@@ -457,8 +459,8 @@ class _BestDealsPageState extends State<BestDealsPage> {
   Future<Sale> fetchSaleData() async {
     await deleteExpiredDeals();
 
-    final response =
-        await http.get(Uri.parse('http://localhost:8000/best-deals/json/'));
+    final response = await http.get(Uri.parse(
+        'http://localhost:8000/best-deals/json/')); // TODO: Ganti ke PWS
 
     if (response.statusCode == 200) {
       final sale = Sale.fromJson(jsonDecode(response.body));
@@ -474,40 +476,49 @@ class _BestDealsPageState extends State<BestDealsPage> {
   }
 
   Future<void> deleteExpiredDeals() async {
-  try {
-    final response = await http.get(Uri.parse('http://localhost:8000/best-deals/json/'));
-    
-    if (response.statusCode != 200) {
-      throw Exception('Failed to fetch deals data');
-    }
+    try {
+      final response = await http.get(Uri.parse(
+          'http://localhost:8000/best-deals/json/')); // TODO: Ganti ke PWS
 
-    final data = jsonDecode(response.body);
-    final currentTime = DateTime.now();
+      if (response.statusCode != 200) {
+        throw Exception('Failed to fetch deals data');
+      }
 
-    // Filter expired deals
-    final expiredDeals = data['least_countdown'].where((product) {
-      final saleEndTime = DateTime.parse(product['sale_end_time']);
-      return saleEndTime.isBefore(currentTime);
-    }).toList();
+      final data = jsonDecode(response.body);
+      final currentTime = DateTime.now();
 
-    // Delete expired deals
-    for (var product in expiredDeals) {
-      try {
-        final deleteResponse = await http.delete(
-          Uri.parse('http://localhost:8000/best-deals/delete-deals/${product['id']}/'),
-        );
+      // Filter expired deals
+      final expiredDeals = data['least_countdown'].where((product) {
+        final saleEndTime = DateTime.parse(product['sale_end_time']);
+        return saleEndTime.isBefore(currentTime);
+      }).toList();
 
-        if (deleteResponse.statusCode != 200) {
-          print('Failed to delete expired product with ID ${product['id']}');
+      // Delete expired deals
+      for (var product in expiredDeals) {
+        try {
+          final deleteResponse = await http.delete(
+            Uri.parse(
+                'http://localhost:8000/best-deals/delete-deals/${product['id']}/'), // TODO: Ganti ke PWS
+          );
+
+          if (deleteResponse.statusCode != 200) {
+            if (mounted) {
+              Toast.error(context,
+                  'Failed to delete expired product with ID ${product['id']}');
+            }
+          }
+        } catch (e) {
+          if (mounted) {
+            Toast.error(context, 'Error deleting expired deal: $e');
+          }
         }
-      } catch (e) {
-        print('Error deleting expired deal: $e');
+      }
+    } catch (e) {
+      if (mounted) {
+        Toast.error(context, 'Error in deleteExpiredDeals: $e');
       }
     }
-  } catch (e) {
-    print('Error in deleteExpiredDeals: $e');
   }
-}
 
   void refreshDealsList() {
     setState(() {
@@ -720,17 +731,19 @@ class _BestDealsPageState extends State<BestDealsPage> {
                       ElevatedButton.icon(
                         onPressed: () async {
                           await deleteExpiredDeals(); // deals yang udah expired akan masuk ke list produk yg bisa ditambahin lagi ke sale
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const AddToDealsPage(),
-                            ),
-                          ).then((_) {
-                            // Refresh the deals list when returning from add page
-                            setState(() {
-                              saleData = fetchSaleData();
+                          if (context.mounted) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const AddToDealsPage(),
+                              ),
+                            ).then((_) {
+                              // Refresh the deals list when returning from add page
+                              setState(() {
+                                saleData = fetchSaleData();
+                              });
                             });
-                          });
+                          }
                         },
                         icon: const Icon(Icons.add),
                         label: const Text('Add to Deals'),

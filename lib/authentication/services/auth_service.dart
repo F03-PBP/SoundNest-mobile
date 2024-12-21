@@ -6,6 +6,7 @@ import 'package:soundnest_mobile/authentication/models/user_model.dart';
 class AuthService {
   static const String baseUrl =
       "http://127.0.0.1:8000/auth/flutter"; // TODO: Ganti ke PWS
+  // "https://khairul-bintang-soundnest.pbp.cs.ui.ac.id/auth/flutter";
 
   // LOGIN
   static Future<Map<String, dynamic>> loginUser(CookieRequest request,

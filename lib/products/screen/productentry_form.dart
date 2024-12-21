@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
+
 import 'package:soundnest_mobile/widgets/toast.dart';
 
 class ProductEntryForm extends StatefulWidget {
   final VoidCallback onProductAdded;
 
-  const ProductEntryForm({Key? key, required this.onProductAdded})
-      : super(key: key);
+  const ProductEntryForm({super.key, required this.onProductAdded});
 
   @override
   State<ProductEntryForm> createState() => _ProductEntryFormState();
@@ -136,7 +136,7 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
 
                     // Send data to the Django API
                     final response = await request.postJson(
-                      "http://localhost:8000/create_flutter/",
+                      "http://localhost:8000/create_flutter/", // TODO: Ganti ke PWS
                       jsonEncode({
                         'name': _productName,
                         'price': _price.toString(),

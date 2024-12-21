@@ -1,5 +1,3 @@
-// lib/models/forum_post.dart
-
 class ForumPost {
   final String id;
   final String author;

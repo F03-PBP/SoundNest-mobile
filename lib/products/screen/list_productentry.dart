@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
 import 'package:soundnest_mobile/products/models/product_entry.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:soundnest_mobile/widgets/toast.dart';
-import 'product_details.dart';
+import 'package:soundnest_mobile/products/screen/product_details.dart';
 import 'package:soundnest_mobile/products/screen/editproduct_form.dart';
 
 class ProductEntryCards extends StatefulWidget {
@@ -22,7 +23,7 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
   Future<List<ProductEntry>> fetchProducts(CookieRequest request) async {
     try {
       final response = await request.get(
-        'http://localhost:8000/api/products/?sort=${widget.sortOption}',
+        'http://localhost:8000/api/products/?sort=${widget.sortOption}', // TODO: Ganti ke PWS
       );
 
       List<ProductEntry> listProduct = [];
@@ -256,23 +257,27 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                                               try {
                                                 final response =
                                                     await request.postJson(
-                                                  'http://localhost:8000/delete_flutter/${snapshot.data![index].pk}/',
+                                                  'http://localhost:8000/delete_flutter/${snapshot.data![index].pk}/', // TODO: Ganti ke PWS
                                                   jsonEncode({}),
                                                 );
 
-                                                if (response['status'] ==
-                                                    "success") {
-                                                  Toast.success(context,
-                                                      "Product successfully deleted!");
+                                                if (context.mounted) {
+                                                  if (response['status'] ==
+                                                      "success") {
+                                                    Toast.success(context,
+                                                        "Product successfully deleted!");
 
-                                                  setState(() {});
-                                                } else {
-                                                  Toast.error(context,
-                                                      "Error: ${response['message']}");
+                                                    setState(() {});
+                                                  } else {
+                                                    Toast.error(context,
+                                                        "Error: ${response['message']}");
+                                                  }
                                                 }
                                               } catch (e) {
-                                                Toast.error(
-                                                    context, "Error: $e");
+                                                if (context.mounted) {
+                                                  Toast.error(
+                                                      context, "Error: $e");
+                                                }
                                               }
                                             }
                                           },
@@ -319,8 +324,4 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
       },
     );
   }
-}
-
-extension on Color {
-  withValues({required double alpha}) {}
 }

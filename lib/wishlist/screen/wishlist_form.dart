@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
+import 'package:soundnest_mobile/widgets/toast.dart';
+
 class ProductEntryFormPage extends StatefulWidget {
   const ProductEntryFormPage({super.key});
 
@@ -16,8 +18,8 @@ class _ProductEntryFormPageState extends State<ProductEntryFormPage> {
   String _selectedProductId = "";
 
   Future<Map<String, String>> fetchProducts(CookieRequest request) async {
-    final response =
-        await request.get('http://127.0.0.1:8000/wishlist/json/product');
+    final response = await request.get(
+        'http://127.0.0.1:8000/wishlist/json/product'); // TODO: Ganti ke PWS
     Map<String, String> productMap = {};
     for (var product in response) {
       if (product != null) {
@@ -131,7 +133,7 @@ class _ProductEntryFormPageState extends State<ProductEntryFormPage> {
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 final response = await request.postJson(
-                                  "http://127.0.0.1:8000/wishlist/create-wishlist-flutter/",
+                                  "http://127.0.0.1:8000/wishlist/create-wishlist-flutter/", // TODO: Ganti ke PWS
                                   jsonEncode(<String, dynamic>{
                                     'product_id': _selectedProductId,
                                     'jumlah': int.parse(_jumlahController.text),
@@ -139,17 +141,11 @@ class _ProductEntryFormPageState extends State<ProductEntryFormPage> {
                                 );
                                 if (context.mounted) {
                                   if (response['status'] == 'success') {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(
-                                      content: Text(
-                                          "Produk baru berhasil disimpan!"),
-                                    ));
+                                    Toast.success(context,
+                                        'Produk baru berhasil disimpan!');
                                   } else {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(
-                                      content: Text(
-                                          "Terdapat kesalahan, silakan coba lagi."),
-                                    ));
+                                    Toast.error(context,
+                                        'Terjadi kesalahan, silakan coba lagi.');
                                   }
                                 }
                               }

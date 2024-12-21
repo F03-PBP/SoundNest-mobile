@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'forum_post.dart';
-import 'widgets/post_card.dart';
-
+import 'package:soundnest_mobile/discussions/forum_post.dart';
+import 'package:soundnest_mobile/discussions/widgets/post_card.dart';
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
+import 'package:soundnest_mobile/widgets/toast.dart';
 
 class ForumScreen extends StatefulWidget {
   const ForumScreen({super.key});
 
   @override
-  _ForumScreenState createState() => _ForumScreenState();
+  State<ForumScreen> createState() => _ForumScreenState();
 }
 
 class RandomColorUtil {
@@ -92,36 +92,28 @@ class _ForumScreenState extends State<ForumScreen> {
     setState(() {
       post.reposts++;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Reposted thread by ${post.author}')),
-    );
+    Toast.success(context, 'Reposted thread by ${post.author}');
   }
 
   void _shareThread(ForumPost post) {
     setState(() {
       post.shares++;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Shared thread by ${post.author}')),
-    );
+    Toast.success(context, 'Shared thread by ${post.author}');
   }
 
   void _deletePost(ForumPost post) {
     setState(() {
       posts.remove(post);
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Thread by ${post.author} deleted')),
-    );
+    Toast.success(context, 'Thread by ${post.author} deleted');
   }
 
   void _deleteReply(ForumPost parentPost, ForumPost reply) {
     setState(() {
       parentPost.replies.remove(reply);
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Reply by ${reply.author} deleted')),
-    );
+    Toast.success(context, 'Reply by ${reply.author} deleted');
   }
 
   void _editPost(ForumPost post) {
@@ -157,50 +149,46 @@ class _ForumScreenState extends State<ForumScreen> {
     );
   }
 
-  void _editReply(ForumPost reply) {
-    final controller = TextEditingController(text: reply.content);
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Edit'),
-          content: TextField(
-            controller: controller,
-            decoration: const InputDecoration(hintText: 'Edit the reply...'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  reply.content = controller.text;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Save'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // void _editReply(ForumPost reply) {
+  //   final controller = TextEditingController(text: reply.content);
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         title: const Text('Edit'),
+  //         content: TextField(
+  //           controller: controller,
+  //           decoration: const InputDecoration(hintText: 'Edit the reply...'),
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () {
+  //               setState(() {
+  //                 reply.content = controller.text;
+  //               });
+  //               Navigator.pop(context);
+  //             },
+  //             child: const Text('Save'),
+  //           ),
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.pop(context);
+  //             },
+  //             child: const Text('Cancel'),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   void _reportPost(ForumPost post) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Reported thread by ${post.author}')),
-    );
+    Toast.success(context, 'Reported thread by ${post.author}');
   }
 
-  void _reportReply(ForumPost reply) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Reported reply by ${reply.author}')),
-    );
-  }
+  // void _reportReply(ForumPost reply) {
+  //   Toast.success(context, 'Reported reply by ${reply.author}');
+  // }
 
   void _showReplyDialog(String postId, String username) {
     final controller = TextEditingController();
@@ -334,7 +322,7 @@ class _ForumScreenState extends State<ForumScreen> {
     final userModel = Provider.of<UserModel>(context);
     final username = userModel.username;
     final isSuperuser = userModel.isSuperuser;
-    print("Logged in as: $username, Is Superuser: $isSuperuser");
+    //print("Logged in as: $username, Is Superuser: $isSuperuser");
 
     return Scaffold(
       appBar: AppBar(
@@ -350,7 +338,7 @@ class _ForumScreenState extends State<ForumScreen> {
               onTap: () => _showNewPostDialog(username),
               child: Container(
                 padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),

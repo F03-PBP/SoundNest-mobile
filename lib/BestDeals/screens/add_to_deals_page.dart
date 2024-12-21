@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+
 import 'package:soundnest_mobile/BestDeals/models/sale.dart';
 import 'package:soundnest_mobile/widgets/toast.dart';
 
@@ -56,7 +57,8 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
     setState(() => _isLoading = true);
     try {
       final response = await http.get(
-        Uri.parse('http://localhost:8000/best-deals/json/'),
+        Uri.parse(
+            'http://localhost:8000/best-deals/json/'), // TODO: Ganti ke PWS
       );
 
       if (response.statusCode == 200) {
@@ -170,7 +172,8 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:8000/best-deals/add-to-deals/'),
+        Uri.parse(
+            'http://localhost:8000/best-deals/add-to-deals/'), // TODO: Ganti ke PWS
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'product_id': _selectedProduct!.id,

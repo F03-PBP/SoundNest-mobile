@@ -1,10 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:soundnest_mobile/authentication/models/user_model.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:soundnest_mobile/authentication/models/user_model.dart';
 import 'package:soundnest_mobile/widgets/toast.dart';
 
 class ProductCard extends StatelessWidget {
@@ -254,7 +254,7 @@ class ProductCard extends StatelessWidget {
               try {
                 final response = await http.delete(
                   Uri.parse(
-                      'http://localhost:8000/best-deals/delete-deals/$id/'),
+                      'http://localhost:8000/best-deals/delete-deals/$id/'), // TODO; Ganti ke PWS
                 );
 
                 if (response.statusCode == 200) {
@@ -355,7 +355,7 @@ class _EditDealsFormState extends State<EditDealsForm> {
     try {
       final response = await http.put(
         Uri.parse(
-            'http://localhost:8000/best-deals/edit-deals/${widget.productId}/'),
+            'http://localhost:8000/best-deals/edit-deals/${widget.productId}/'), // TODO: Ganti ke PWS
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'discount': int.parse(_discountController.text),

@@ -1,8 +1,7 @@
-// lib/widgets/post_card.dart
-
 import 'package:flutter/material.dart';
+
 import 'package:soundnest_mobile/discussions/forum_post.dart';
-import 'reply_card.dart';
+import 'package:soundnest_mobile/discussions/widgets/reply_card.dart';
 
 class RandomColorUtil {
   static Color getColorFromName(String name) {
@@ -26,7 +25,7 @@ class PostCard extends StatelessWidget {
   final bool isSuperuser;
 
   const PostCard({
-    Key? key,
+    super.key,
     required this.post,
     required this.onReply,
     required this.onReplyToReply,
@@ -38,7 +37,7 @@ class PostCard extends StatelessWidget {
     required this.onDeleteReply,
     required this.onReport,
     required this.isSuperuser,
-  }) : super(key: key);
+  });
 
   void _showReportDialog(BuildContext context) {
     final List<String> reasons = [
@@ -110,7 +109,7 @@ class PostCard extends StatelessWidget {
                       selectedReasons
                           .add("Other: ${otherReasonController.text}");
                     }
-                    print("Reported reasons: $selectedReasons");
+                    //print("Reported reasons: $selectedReasons");
                     onReport(post);
                     Navigator.pop(context);
                   },

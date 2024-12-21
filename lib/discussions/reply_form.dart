@@ -1,5 +1,3 @@
-// lib/widgets/reply_form.dart
-
 import 'package:flutter/material.dart';
 
 class ReplyForm extends StatelessWidget {
@@ -7,8 +5,7 @@ class ReplyForm extends StatelessWidget {
   final TextEditingController controller = TextEditingController();
   final Function(String, String) onReplyCreated;
 
-  ReplyForm({Key? key, required this.postId, required this.onReplyCreated})
-      : super(key: key);
+  ReplyForm({super.key, required this.postId, required this.onReplyCreated});
 
   @override
   Widget build(BuildContext context) {

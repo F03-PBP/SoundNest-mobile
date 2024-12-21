@@ -1,10 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+
 import 'package:soundnest_mobile/wishlist/screen/wishlist_form.dart';
-import '/wishlist/models/wishlist_model.dart';
+import 'package:soundnest_mobile/wishlist/models/wishlist_model.dart';
+import 'package:soundnest_mobile/widgets/toast.dart';
 
 class WishlistPage extends StatefulWidget {
   const WishlistPage({super.key});
@@ -20,8 +21,8 @@ class _WishlistPageState extends State<WishlistPage> {
 
   // Fungsi untuk mengambil data produk wishlist dari Django
   Future<List<WishlistProduct>> fetchWishlist(CookieRequest request) async {
-    final response =
-        await request.get('http://127.0.0.1:8000/wishlist/json/wishlist');
+    final response = await request.get(
+        'http://127.0.0.1:8000/wishlist/json/wishlist'); // TODO: Ganti ke PWS
     var data = response;
     List<WishlistProduct> listProduct = [];
     for (var d in data) {
@@ -80,15 +81,11 @@ class _WishlistPageState extends State<WishlistPage> {
   Future<void> deleteProduct(CookieRequest request, String productId) async {
     final response = await request.post(
         'http://127.0.0.1:8000/wishlist/delete_flutter/',
-        {'productId': productId});
+        {'productId': productId}); // TODO: Ganti ke PWS
     if (response['status'] == 'success') {
       setState(() {}); // Menyegarkan tampilan setelah penghapusan
     } else {
-      // Menangani error jika penghapusan gagal
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to delete product'),
-        backgroundColor: Colors.red,
-      ));
+      Toast.error(context, 'Failed to delete product');
     }
   }
 
@@ -96,16 +93,13 @@ class _WishlistPageState extends State<WishlistPage> {
   Future<void> editProductQuantity(
       CookieRequest request, String productId, int newQuantity) async {
     if (newQuantity < 0) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Quantity must be greater than or equal to 0'),
-        backgroundColor: Colors.red,
-      ));
+      Toast.error(context, 'Quantity must be greater than or equal to 0');
       return;
     }
 
     // Mengirim request POST dengan JSON payload menggunakan postJson
     final response = await request.postJson(
-      'http://127.0.0.1:8000/wishlist/edit_quantity_flutter/',
+      'http://127.0.0.1:8000/wishlist/edit_quantity_flutter/', // TODO: Ganti ke PWS
       jsonEncode({
         'product_id': productId,
         'new_quantity': newQuantity,
@@ -117,10 +111,7 @@ class _WishlistPageState extends State<WishlistPage> {
       setState(() {}); // Menyegarkan tampilan setelah pengeditan
     } else {
       // Menangani error jika pengeditan gagal
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to update quantity'),
-        backgroundColor: Colors.red,
-      ));
+      Toast.error(context, 'Failed to update quantity');
     }
   }
 

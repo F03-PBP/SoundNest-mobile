@@ -71,8 +71,8 @@ class ReviewsService {
       if (byUser) 'by_user': 'true',
     };
 
-    final uri =
-        Uri.http('localhost:8000', 'reviews/flutter/show_reviews', queryParams);
+    final uri = Uri.http('localhost:8000', 'reviews/flutter/show_reviews',
+        queryParams); // TODO: Ganti ke PWS
 
     // Review by user
     final Map<String, String> headers = (byUser && userModel != null)

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:soundnest_mobile/reviews/screen/reviews.dart';
 
 class ProductDetailsPage extends StatelessWidget {

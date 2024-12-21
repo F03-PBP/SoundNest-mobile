@@ -1,12 +1,10 @@
-// lib/widgets/new_post.dart
-
 import 'package:flutter/material.dart';
 
 class NewPostScreen extends StatelessWidget {
   final TextEditingController controller = TextEditingController();
   final Function(String) onPostCreated;
 
-  NewPostScreen({Key? key, required this.onPostCreated}) : super(key: key);
+  NewPostScreen({super.key, required this.onPostCreated});
 
   @override
   Widget build(BuildContext context) {

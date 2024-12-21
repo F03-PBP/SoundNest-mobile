@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
+
 import 'package:soundnest_mobile/widgets/toast.dart';
 
 class EditProductForm extends StatefulWidget {
@@ -161,7 +162,7 @@ class _EditProductFormState extends State<EditProductForm> {
 
                     // Send updated data to the Django API
                     final response = await request.postJson(
-                      "http://localhost:8000/edit_flutter/${widget.productId}/",
+                      "http://localhost:8000/edit_flutter/${widget.productId}/", // TODO: Ganti ke PWS
                       jsonEncode({
                         'product_name': _productName,
                         'price': _price.toString(),
