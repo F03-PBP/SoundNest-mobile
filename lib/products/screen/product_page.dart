@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:soundnest_mobile/products/screen/list_productentry.dart';
+import 'package:soundnest_mobile/products/screen/productentry_form.dart'; // Import the ProductEntryForm
 
 class ProductPage extends StatelessWidget {
   const ProductPage({super.key});
@@ -92,7 +93,13 @@ class ProductPage extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Add functionality for the "Tambah Produk" button
+                    // Navigate to the ProductEntryForm when the button is clicked
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ProductEntryForm(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 168, 115, 77),
