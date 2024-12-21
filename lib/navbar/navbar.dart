@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:soundnest_mobile/BestDeals/screens/list_bestdeals.dart';
 import 'package:soundnest_mobile/products/screen/product_page.dart';
 import 'package:soundnest_mobile/authentication/screen/profile.dart';
 
@@ -16,10 +17,10 @@ class _MainNavigationState extends State<MainNavigation> {
   // Pages Navbar
   static const List<Widget> _pages = <Widget>[
     ProductPage(),
-    Center(child: Text('Best Deals')), // Placeholder for Best Deals
+    BestDealsPage(),
     Center(child: Text('Discussions')), // Placeholder for Discussions
     Center(child: Text('Wishlist')), // Placeholder for Wishlist
-    ProfilePage(), // Replace with your actual Profile page widget
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
