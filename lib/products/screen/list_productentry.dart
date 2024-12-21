@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:soundnest_mobile/authentication/models/user_model.dart';
 import 'package:soundnest_mobile/products/models/product_entry.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'product_details.dart'; // Import the ProductDetailsPage
+import 'package:soundnest_mobile/widgets/toast.dart';
+import 'product_details.dart';
+import 'package:soundnest_mobile/products/screen/editproduct_form.dart';
 
 class ProductEntryCards extends StatefulWidget {
   final String sortOption;
@@ -17,7 +21,6 @@ class ProductEntryCards extends StatefulWidget {
 class _ProductEntryCardsState extends State<ProductEntryCards> {
   Future<List<ProductEntry>> fetchProducts(CookieRequest request) async {
     try {
-      // Send the sort option as a query parameter
       final response = await request.get(
         'http://localhost:8000/api/products/?sort=${widget.sortOption}',
       );
@@ -30,14 +33,34 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
       }
       return listProduct;
     } catch (e) {
-      print('Error fetching products: $e');
       return [];
     }
+  }
+
+  String formatPrice(String price) {
+    if (price.length > 12) {
+      return '${price.substring(0, 9)}...';
+    }
+    return price;
   }
 
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    final user = Provider.of<UserModel>(context);
+    final List<String> imagePaths = [
+      'assets/images/1.png',
+      'assets/images/2.png',
+      'assets/images/3.png',
+      'assets/images/4.png',
+      'assets/images/5.png',
+      'assets/images/6.png',
+      'assets/images/7.png',
+      'assets/images/8.png',
+      'assets/images/9.png',
+      'assets/images/10.png',
+    ];
+
     return FutureBuilder(
       future: fetchProducts(request),
       builder: (context, AsyncSnapshot<List<ProductEntry>> snapshot) {
@@ -58,16 +81,17 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
               Expanded(
                 child: GridView.builder(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
-                    childAspectRatio: 0.7,
+                    childAspectRatio: 0.5,
                   ),
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
                     final product = snapshot.data![index].fields;
+                    final imagePath = imagePaths[index % imagePaths.length];
 
                     return GestureDetector(
                       onTap: () {
@@ -75,12 +99,13 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ProductDetailsPage(
+                              productId: snapshot.data![index].pk,
                               productName: product.productName,
                               price: product.price.toDouble(),
                               rating: product.rating.toDouble(),
                               reviews: product.reviews,
                               description:
-                                  'Experience sound like never before with the ${product.productName} Headphones. Engineered for audiophiles and casual listeners alike, these headphones deliver immersive sound quality with deep bass, crisp highs, and a balanced midrange. Featuring advanced noise-cancellation technology, you can escape the hustle and bustle of your surroundings and dive into your music, podcasts, or calls without distractions.',
+                                  'Experience sound like never before with the ${product.productName} Headphones. Engineered for audiophiles and casual listeners alike, these headphones deliver immersive sound quality with deep bass, crisp highs, and a balanced midrange.',
                             ),
                           ),
                         );
@@ -97,127 +122,191 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                             ),
                           ],
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height:
-                                  146, // Adjust height to make the image bigger
-                              child: Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                      top: Radius.circular(20)),
-                                  child: Image.asset(
-                                    'assets/images/templateimage.png',
-                                    fit:
-                                        BoxFit.contain, // Keep the aspect ratio
-                                    width: double.infinity,
-                                  ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.asset(
+                                  imagePath,
+                                  fit: BoxFit.contain,
+                                  width: double.infinity,
+                                  height: 140,
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 20.0,
-                                  left: 20.0,
-                                  right: 20.0,
-                                  bottom: 4),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              const SizedBox(height: 8),
+                              Text(
+                                product.productName,
+                                style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Rp${formatPrice(product.price.toString())}',
+                                style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
                                 children: [
                                   Text(
-                                    product.productName,
+                                    '${product.rating}',
                                     style: GoogleFonts.inter(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: Colors.grey[600],
                                     ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  const SizedBox(height: 4),
+                                  const Icon(
+                                    Icons.star,
+                                    size: 14,
+                                    color: Colors.amber,
+                                  ),
                                   Text(
-                                    'Rp${product.price}',
+                                    ' (${product.reviews} reviews)',
                                     style: GoogleFonts.inter(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
+                                      fontSize: 12,
+                                      color: Colors.grey[600],
                                     ),
                                   ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        '${product.rating}',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 14,
-                                          color: Colors.grey[600],
+                                ],
+                              ),
+                              const Spacer(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: user.isSuperuser
+                                    ? [
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditProductForm(
+                                                  productId:
+                                                      snapshot.data![index].pk,
+                                                  productName:
+                                                      product.productName,
+                                                  price:
+                                                      product.price.toDouble(),
+                                                  rating:
+                                                      product.rating.toDouble(),
+                                                  reviews: product.reviews,
+                                                  onProductUpdated: () {
+                                                    setState(() {});
+                                                  },
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: const BoxDecoration(
+                                              color: Color(0xFF362417),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(
+                                              Icons.edit,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      const Icon(
-                                        Icons.star,
-                                        size: 14,
-                                        color: Colors.amber,
-                                      ),
-                                      Text(
-                                        ' (${product.reviews} reviews)',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 14,
-                                          color: Colors.grey[600],
+                                        const SizedBox(width: 8),
+                                        GestureDetector(
+                                          onTap: () async {
+                                            final bool confirmed =
+                                                await showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                      "Konfirmasi Ulang"),
+                                                  content: const Text(
+                                                      "Apakah anda ingin menghapus produk ini?"),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              context, false),
+                                                      child:
+                                                          const Text("Cancel"),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              context, true),
+                                                      child:
+                                                          const Text("Delete"),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+
+                                            if (confirmed) {
+                                              try {
+                                                final response =
+                                                    await request.postJson(
+                                                  'http://localhost:8000/delete_flutter/${snapshot.data![index].pk}/',
+                                                  jsonEncode({}),
+                                                );
+
+                                                if (response['status'] ==
+                                                    "success") {
+                                                  Toast.success(context,
+                                                      "Product successfully deleted!");
+
+                                                  setState(() {});
+                                                } else {
+                                                  Toast.error(context,
+                                                      "Error: ${response['message']}");
+                                                }
+                                              } catch (e) {
+                                                Toast.error(
+                                                    context, "Error: $e");
+                                              }
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: const BoxDecoration(
+                                              color: Colors.red,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(
+                                              Icons.delete,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .end, // Align icons to the right
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          // Implement edit functionality here
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.all(
-                                              10), // Increase padding for larger size
+                                      ]
+                                    : [
+                                        Container(
+                                          padding: const EdgeInsets.all(10),
                                           decoration: const BoxDecoration(
                                             color: Color(0xFF362417),
                                             shape: BoxShape.circle,
                                           ),
                                           child: const Icon(
-                                            Icons.edit,
+                                            Icons.add,
                                             color: Colors.white,
-                                            size: 20, // Increase icon size
+                                            size: 20,
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(
-                                          width:
-                                              12), // Space between Edit and Delete icons
-                                      GestureDetector(
-                                        onTap: () {
-                                          // Implement delete functionality here
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.all(
-                                              10), // Increase padding for larger size
-                                          decoration: const BoxDecoration(
-                                            color: Colors.red,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: const Icon(
-                                            Icons.delete,
-                                            color: Colors.white,
-                                            size: 20, // Increase icon size
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                      ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );

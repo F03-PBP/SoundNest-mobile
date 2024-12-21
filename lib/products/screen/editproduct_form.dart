@@ -4,17 +4,29 @@ import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:soundnest_mobile/widgets/toast.dart';
 
-class ProductEntryForm extends StatefulWidget {
-  final VoidCallback onProductAdded;
+class EditProductForm extends StatefulWidget {
+  final String productId;
+  final String productName;
+  final double price;
+  final double rating;
+  final int reviews;
+  final VoidCallback onProductUpdated;
 
-  const ProductEntryForm({Key? key, required this.onProductAdded})
-      : super(key: key);
+  const EditProductForm({
+    Key? key,
+    required this.productId,
+    required this.productName,
+    required this.price,
+    required this.rating,
+    required this.reviews,
+    required this.onProductUpdated,
+  }) : super(key: key);
 
   @override
-  State<ProductEntryForm> createState() => _ProductEntryFormState();
+  State<EditProductForm> createState() => _EditProductFormState();
 }
 
-class _ProductEntryFormState extends State<ProductEntryForm> {
+class _EditProductFormState extends State<EditProductForm> {
   final _formKey = GlobalKey<FormState>();
   late String _productName;
   late double _price;
@@ -22,12 +34,21 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
   late int _reviews;
 
   @override
+  void initState() {
+    super.initState();
+    _productName = widget.productName;
+    _price = widget.price;
+    _rating = widget.rating;
+    _reviews = widget.reviews;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Product"),
+        title: const Text("Edit Produk"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -38,6 +59,7 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
             children: [
               // Product Name Field
               TextFormField(
+                initialValue: _productName,
                 decoration: const InputDecoration(
                   labelText: "Product Name",
                   border: OutlineInputBorder(),
@@ -47,7 +69,7 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return "Please enter a product.";
+                    return "Please enter a product name.";
                   }
                   return null;
                 },
@@ -56,6 +78,7 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
 
               // Price Field
               TextFormField(
+                initialValue: _price.toString(),
                 decoration: const InputDecoration(
                   labelText: "Price",
                   border: OutlineInputBorder(),
@@ -78,6 +101,7 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
 
               // Rating Field
               TextFormField(
+                initialValue: _rating.toString(),
                 decoration: const InputDecoration(
                   labelText: "Rating",
                   border: OutlineInputBorder(),
@@ -101,6 +125,7 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
 
               // Reviews Field
               TextFormField(
+                initialValue: _reviews.toString(),
                 decoration: const InputDecoration(
                   labelText: "Reviews",
                   border: OutlineInputBorder(),
@@ -127,11 +152,11 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
 
-                    // Send data to the Django API
+                    // Send updated data to the Django API
                     final response = await request.postJson(
-                      "http://localhost:8000/create_flutter/",
+                      "http://localhost:8000/edit_flutter/${widget.productId}/",
                       jsonEncode({
-                        'name': _productName,
+                        'product_name': _productName,
                         'price': _price.toString(),
                         'rating': _rating,
                         'reviews': _reviews.toString(),
@@ -140,22 +165,21 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
 
                     if (context.mounted) {
                       if (response['status'] == 'success') {
-                        Toast.success(context, "Product successfully created!");
+                        Toast.success(context, "Product successfully updated!");
 
-                        widget.onProductAdded();
+                        widget.onProductUpdated();
 
                         // Navigate back to the product list page
                         Navigator.pop(context);
                       } else {
-                        Toast.error(context, "Error: ${response['message']}");
+                        Toast.error(context, "Error: ${response['error']}");
                       }
                     }
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      const Color(0xFF362417), // Button color #362417
-                  foregroundColor: Colors.white, // Text color white
+                  backgroundColor: const Color(0xFF362417), // Button color
+                  foregroundColor: Colors.white, // Text color
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   shape: RoundedRectangleBorder(
@@ -163,7 +187,7 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
                         BorderRadius.circular(8), // Optional: Rounded corners
                   ),
                 ),
-                child: const Text("Tambah Produk"),
+                child: const Text("Update Product"),
               ),
             ],
           ),
