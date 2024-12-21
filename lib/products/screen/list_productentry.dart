@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -65,7 +67,7 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
               Expanded(
                 child: GridView.builder(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
@@ -198,7 +200,68 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                                   ),
                                   const SizedBox(width: 8),
                                   GestureDetector(
-                                    onTap: () {},
+                                    onTap: () async {
+                                      final bool confirmed = await showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title:
+                                                const Text("Konfirmasi Ulang"),
+                                            content: const Text(
+                                                "Apakah anda ingin menghapus produk ini?"),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, false),
+                                                child: const Text("Cancel"),
+                                              ),
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, true),
+                                                child: const Text("Delete"),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+
+                                      if (confirmed) {
+                                        try {
+                                          final response =
+                                              await request.postJson(
+                                            'http://localhost:8000/delete_flutter/${snapshot.data![index].pk}/',
+                                            jsonEncode(
+                                                {}), // Send an empty body
+                                          );
+
+                                          if (response['status'] == "success") {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      "Product successfully deleted!")),
+                                            );
+
+                                            setState(() {
+                                              // Refresh the product list
+                                            });
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                  content: Text(
+                                                      "Error: ${response['message']}")),
+                                            );
+                                          }
+                                        } catch (e) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                                content: Text("Error: $e")),
+                                          );
+                                        }
+                                      }
+                                    },
                                     child: Container(
                                       padding: const EdgeInsets.all(10),
                                       decoration: const BoxDecoration(
