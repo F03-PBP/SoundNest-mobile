@@ -6,15 +6,15 @@ import 'package:provider/provider.dart';
 import 'package:soundnest_mobile/BestDeals/models/sale.dart';
 import 'package:soundnest_mobile/BestDeals/widgets/product_card.dart';
 import 'package:soundnest_mobile/BestDeals/screens/add_to_deals_page.dart';
-import 'package:soundnest_mobile/authentication/models/user_model.dart'; 
+import 'package:soundnest_mobile/authentication/models/user_model.dart';
 
 class DealsCarouselItem extends StatelessWidget {
   final dynamic product;
-  
+
   const DealsCarouselItem({
-    Key? key,
+    super.key,
     required this.product,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,8 @@ class DealsCarouselItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 8.0),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 4.0),
                     decoration: BoxDecoration(
                       color: Colors.blue.shade100,
                       borderRadius: BorderRadius.circular(4.0),
@@ -93,7 +94,7 @@ class DealsCarouselItem extends StatelessWidget {
                   const SizedBox(height: 4.0),
                   Text(
                     'Time remaining: ${product.timeRemaining}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.red,
                       fontSize: 12.0,
                     ),
@@ -106,7 +107,7 @@ class DealsCarouselItem extends StatelessWidget {
       ),
     );
   }
-  
+
   String formatRupiah(double value) {
     // Convert the number to an integer for formatting without decimals
     final intValue = value.toInt();
@@ -132,9 +133,9 @@ class DealsCarousel extends StatefulWidget {
   final List<dynamic> products;
 
   const DealsCarousel({
-    Key? key,
+    super.key,
     required this.products,
-  }) : super(key: key);
+  });
 
   @override
   State<DealsCarousel> createState() => _DealsCarouselState();
@@ -165,7 +166,7 @@ class _DealsCarouselState extends State<DealsCarousel> {
       } else {
         _currentPage = 0;
       }
-      
+
       if (_pageController.hasClients) {
         _pageController.animateToPage(
           _currentPage,
@@ -232,7 +233,7 @@ class FilterModal extends StatefulWidget {
   final VoidCallback onApplyFilter;
 
   const FilterModal({
-    Key? key,
+    super.key,
     required this.selectedPriceRange,
     required this.selectedRatingRange,
     required this.selectedDiscountRange,
@@ -240,7 +241,7 @@ class FilterModal extends StatefulWidget {
     required this.onRatingRangeChanged,
     required this.onDiscountRangeChanged,
     required this.onApplyFilter,
-  }) : super(key: key);
+  });
 
   @override
   State<FilterModal> createState() => _FilterModalState();
@@ -259,7 +260,8 @@ class _FilterModalState extends State<FilterModal> {
     _localDiscountRange = widget.selectedDiscountRange;
   }
 
-  void _handleOptionTap(String option, String currentValue, Function(String) onChanged) {
+  void _handleOptionTap(
+      String option, String currentValue, Function(String) onChanged) {
     // If the tapped option is already selected, set it to 'All' (unselect)
     // Otherwise, select the tapped option
     onChanged(option == currentValue ? 'All' : option);
@@ -319,7 +321,7 @@ class _FilterModalState extends State<FilterModal> {
             ['Below 500k', '500k to 1.5M', '1.5M to 3M', 'Above 3M'],
             (value) {
               setState(() {
-                 _handleOptionTap(value, _localPriceRange, (newValue) {
+                _handleOptionTap(value, _localPriceRange, (newValue) {
                   _localPriceRange = newValue;
                 });
               });
@@ -339,7 +341,6 @@ class _FilterModalState extends State<FilterModal> {
             },
           ),
           const SizedBox(height: 24.0),
-
           ElevatedButton(
             onPressed: () {
               widget.onPriceRangeChanged(_localPriceRange);
@@ -347,7 +348,7 @@ class _FilterModalState extends State<FilterModal> {
               widget.onDiscountRangeChanged(_localDiscountRange);
               // Close the modal
               Navigator.of(context).pop();
-              
+
               widget.onApplyFilter();
             },
             style: ElevatedButton.styleFrom(
@@ -408,7 +409,8 @@ class _FilterModalState extends State<FilterModal> {
                   option,
                   style: TextStyle(
                     color: isSelected ? Colors.white : Colors.black87,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
               ),
@@ -445,7 +447,8 @@ class _BestDealsPageState extends State<BestDealsPage> {
   }
 
   Future<Sale> fetchSaleData() async {
-    final response = await http.get(Uri.parse('http://localhost:8000/best-deals/json/'));
+    final response =
+        await http.get(Uri.parse('http://localhost:8000/best-deals/json/'));
 
     if (response.statusCode == 200) {
       final sale = Sale.fromJson(jsonDecode(response.body));
@@ -475,13 +478,17 @@ class _BestDealsPageState extends State<BestDealsPage> {
         selectedPriceRange: _selectedPriceRange,
         selectedRatingRange: _selectedRatingRange,
         selectedDiscountRange: _selectedDiscountRange,
-        onPriceRangeChanged: (value) => setState(() => _selectedPriceRange = value),
-        onRatingRangeChanged: (value) => setState(() => _selectedRatingRange = value),
-        onDiscountRangeChanged: (value) => setState(() => _selectedDiscountRange = value),
+        onPriceRangeChanged: (value) =>
+            setState(() => _selectedPriceRange = value),
+        onRatingRangeChanged: (value) =>
+            setState(() => _selectedRatingRange = value),
+        onDiscountRangeChanged: (value) =>
+            setState(() => _selectedDiscountRange = value),
         onApplyFilter: () {
-          if (mounted && _currentSaleData != null) {  // Check if we have the data
+          if (mounted && _currentSaleData != null) {
+            // Check if we have the data
             setState(() {
-              _filterProducts(_currentSaleData!);  // Use the stored sale data
+              _filterProducts(_currentSaleData!); // Use the stored sale data
             });
           }
         },
@@ -505,7 +512,8 @@ class _BestDealsPageState extends State<BestDealsPage> {
   }
 
   bool _matchesFilter(product) {
-    bool matchesSearchQuery = product.productName.toLowerCase().contains(_searchQuery.toLowerCase());
+    bool matchesSearchQuery =
+        product.productName.toLowerCase().contains(_searchQuery.toLowerCase());
 
     // Price filter
     bool matchesPrice = _priceMatches(product);
@@ -516,7 +524,10 @@ class _BestDealsPageState extends State<BestDealsPage> {
     // Discount filter
     bool matchesDiscount = _discountMatches(product);
 
-    return matchesSearchQuery && matchesPrice && matchesRating && matchesDiscount;
+    return matchesSearchQuery &&
+        matchesPrice &&
+        matchesRating &&
+        matchesDiscount;
   }
 
   bool _priceMatches(product) {
@@ -563,7 +574,7 @@ class _BestDealsPageState extends State<BestDealsPage> {
   @override
   Widget build(BuildContext context) {
     final userModel = Provider.of<UserModel>(context);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Best Deals'),
@@ -619,7 +630,8 @@ class _BestDealsPageState extends State<BestDealsPage> {
                             hintText: 'Search for products',
                             prefixIcon: Icon(Icons.search),
                             border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 12.0),
                           ),
                         ),
                       ),
@@ -659,7 +671,8 @@ class _BestDealsPageState extends State<BestDealsPage> {
                       icon: const Icon(Icons.add),
                       label: const Text('Add to Deals'),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
                       ),
                     ),
                   ],
@@ -669,7 +682,8 @@ class _BestDealsPageState extends State<BestDealsPage> {
               const SectionHeader(title: 'Top Picks (sorted by rating)'),
               bestDealsGrid(filteredTopPicks),
 
-              const SectionHeader(title: 'Least Countdown (sorted by time remaining)'),
+              const SectionHeader(
+                  title: 'Least Countdown (sorted by time remaining)'),
               bestDealsGrid(filteredLeastCountdown),
             ],
           );
@@ -692,7 +706,8 @@ class _BestDealsPageState extends State<BestDealsPage> {
         return LayoutBuilder(
           builder: (context, constraints) {
             return ProductCard(
-              imageUrl: 'http://127.0.0.1:8000/static/images/templateimage.webp',
+              imageUrl:
+                  'http://127.0.0.1:8000/static/images/templateimage.webp',
               title: item.productName,
               originalPrice: item.originalPrice,
               discountedPrice: item.price,

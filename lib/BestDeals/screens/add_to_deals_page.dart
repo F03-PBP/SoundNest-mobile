@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:soundnest_mobile/BestDeals/models/sale.dart';
+import 'package:soundnest_mobile/widgets/toast.dart';
 
 class AddToDealsPage extends StatefulWidget {
   const AddToDealsPage({super.key});
@@ -13,12 +14,12 @@ class AddToDealsPage extends StatefulWidget {
 
 class _AddToDealsPageState extends State<AddToDealsPage> {
   final _formKey = GlobalKey<FormState>();
-  
+
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _discountController = TextEditingController();
   final TextEditingController _endDateController = TextEditingController();
   final TextEditingController _endTimeController = TextEditingController();
-  
+
   List<AvailableProduct> _availableProducts = [];
   List<AvailableProduct> _filteredProducts = [];
   String _selectedPriceRange = 'All';
@@ -61,7 +62,7 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         final List<dynamic> productsJson = responseData['available_products'];
-        
+
         setState(() {
           _availableProducts = productsJson
               .map((json) => AvailableProduct.fromJson(json))
@@ -70,9 +71,9 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading products: $e')),
-      );
+      if (mounted) {
+        Toast.error(context, 'Error loading products: $e');
+      }
     } finally {
       setState(() => _isLoading = false);
     }
@@ -154,9 +155,7 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
 
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate() || _selectedProduct == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all fields correctly')),
-      );
+      Toast.error(context, 'Please fill all fields correctly');
       return;
     }
 
@@ -180,19 +179,19 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
         }),
       );
 
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Product added to deals successfully')),
-        );
-        Navigator.pop(context);
-      } else {
-        final error = json.decode(response.body)['message'];
-        throw Exception(error);
+      if (mounted) {
+        if (response.statusCode == 200) {
+          Toast.success(context, 'Product added to deals successfully');
+          Navigator.pop(context);
+        } else {
+          final error = json.decode(response.body)['message'];
+          throw Exception(error);
+        }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error adding product to deals: $e')),
-      );
+      if (mounted) {
+        Toast.error(context, 'Error adding product to deals: $e');
+      }
     }
   }
 
@@ -218,7 +217,6 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
                 onChanged: (_) => _filterProducts(),
               ),
               const SizedBox(height: 8),
-              
               Row(
                 children: [
                   // Price Range Filter
@@ -272,7 +270,6 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
                 ],
               ),
               const SizedBox(height: 16),
-
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -285,7 +282,8 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
                           itemCount: _filteredProducts.length,
                           itemBuilder: (context, index) {
                             final product = _filteredProducts[index];
-                            final isSelected = _selectedProduct?.id == product.id;
+                            final isSelected =
+                                _selectedProduct?.id == product.id;
                             return Container(
                               decoration: BoxDecoration(
                                 border: isSelected
@@ -309,8 +307,11 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
                                 trailing: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(Icons.star, color: Colors.amber), // Optional star icon
-                                    Text(product.rating.toStringAsFixed(1)), // Display rating
+                                    const Icon(Icons.star,
+                                        color:
+                                            Colors.amber), // Optional star icon
+                                    Text(product.rating
+                                        .toStringAsFixed(1)), // Display rating
                                   ],
                                 ),
                                 selected: isSelected,
@@ -324,7 +325,6 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
                 ),
               ),
               const SizedBox(height: 16),
-
               TextFormField(
                 controller: _discountController,
                 decoration: const InputDecoration(
@@ -344,7 +344,6 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
                 },
               ),
               const SizedBox(height: 16),
-
               Row(
                 children: [
                   Expanded(
@@ -384,7 +383,7 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
                                 currentTime.hour,
                                 currentTime.minute,
                               );
-                              
+
                               if (selectedDateTime.isBefore(currentDateTime)) {
                                 return 'Selected time must be in the future';
                               }
@@ -422,7 +421,6 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
                 ],
               ),
               const SizedBox(height: 24),
-
               ElevatedButton(
                 onPressed: _submitForm,
                 child: const Text('Add to Deals'),

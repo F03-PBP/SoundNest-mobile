@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:soundnest_mobile/widgets/toast.dart';
 
 class ProductCard extends StatelessWidget {
   final String imageUrl;
@@ -18,7 +19,7 @@ class ProductCard extends StatelessWidget {
   final double maxWidth;
   final String id;
   final DateTime saleEndTime;
-  final VoidCallback onDelete; 
+  final VoidCallback onDelete;
 
   const ProductCard({
     super.key,
@@ -29,12 +30,11 @@ class ProductCard extends StatelessWidget {
     required this.rating,
     required this.numRatings,
     required this.discount,
-    required this.timeRemaining, 
+    required this.timeRemaining,
     required this.maxWidth,
     required this.id,
     required this.onDelete,
     required this.saleEndTime,
-    
   });
 
   String formatRupiah(double value) {
@@ -60,7 +60,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userModel = Provider.of<UserModel>(context);
-    
+
     return Container(
       constraints: BoxConstraints(maxWidth: maxWidth),
       decoration: BoxDecoration(
@@ -78,25 +78,28 @@ class ProductCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Image section with fixed aspect ratio
-          Container(
+          SizedBox(
             height: 190.0, // Adjust the height as per your needs
             width: double.infinity,
             child: Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(8.0)),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(8.0)),
                   child: Image.network(
                     imageUrl,
                     width: double.infinity,
                     height: double.infinity,
-                    fit: BoxFit.contain, // This will ensure the entire image is visible without being cropped
+                    fit: BoxFit
+                        .contain, // This will ensure the entire image is visible without being cropped
                   ),
                 ),
                 Positioned(
                   top: 8.0,
                   right: 8.0,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 4.0),
                     decoration: BoxDecoration(
                       color: Colors.red,
                       borderRadius: BorderRadius.circular(12.0),
@@ -122,7 +125,8 @@ class ProductCard extends StatelessWidget {
                           backgroundColor: Colors.blue.withOpacity(0.8),
                           radius: 16,
                           child: IconButton(
-                            icon: const Icon(Icons.edit, size: 16, color: Colors.white),
+                            icon: const Icon(Icons.edit,
+                                size: 16, color: Colors.white),
                             onPressed: () => _showEditModal(context),
                           ),
                         ),
@@ -132,7 +136,8 @@ class ProductCard extends StatelessWidget {
                           backgroundColor: Colors.red.withOpacity(0.8),
                           radius: 16,
                           child: IconButton(
-                            icon: const Icon(Icons.delete, size: 16, color: Colors.white),
+                            icon: const Icon(Icons.delete,
+                                size: 16, color: Colors.white),
                             onPressed: () => _showDeleteConfirmation(context),
                           ),
                         ),
@@ -182,7 +187,7 @@ class ProductCard extends StatelessWidget {
                 const SizedBox(height: 4.0),
                 Row(
                   children: [
-                    Icon(Icons.star, color: Colors.amber, size: 16.0),
+                    const Icon(Icons.star, color: Colors.amber, size: 16.0),
                     Text(
                       ' $rating ($numRatings)',
                       style: TextStyle(
@@ -195,7 +200,7 @@ class ProductCard extends StatelessWidget {
                 const SizedBox(height: 4.0),
                 Text(
                   'Sales ends in: $timeRemaining',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12.0,
                     color: Colors.red,
                   ),
@@ -207,7 +212,6 @@ class ProductCard extends StatelessWidget {
           ),
         ],
       ),
-
     );
   }
 
@@ -226,7 +230,7 @@ class ProductCard extends StatelessWidget {
           productId: id,
           discount: discount,
           saleEndTime: saleEndTime,
-          onRefresh: onDelete, 
+          onRefresh: onDelete,
         ),
       ),
     );
@@ -237,7 +241,8 @@ class ProductCard extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Product from Deals'),
-        content: const Text('Are you sure you want to remove this product from deals?'),
+        content: const Text(
+            'Are you sure you want to remove this product from deals?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -247,23 +252,24 @@ class ProductCard extends StatelessWidget {
             onPressed: () async {
               try {
                 final response = await http.delete(
-                  Uri.parse('http://localhost:8000/best-deals/delete-deals/$id/'),
+                  Uri.parse(
+                      'http://localhost:8000/best-deals/delete-deals/$id/'),
                 );
-                
+
                 if (response.statusCode == 200) {
-                  Navigator.pop(context); // Close dialog
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Deal deleted successfully')),
-                  );
+                  if (context.mounted) {
+                    Toast.success(context, 'Deal deleted successfully');
+                    Navigator.pop(context); // Close dialog
+                    onDelete();
+                  }
                   // Refresh the deals list
-                  onDelete();
                 } else {
                   throw Exception('Failed to delete product');
                 }
               } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error: $e')),
-                );
+                if (context.mounted) {
+                  Toast.error(context, 'Error: $e');
+                }
               }
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
@@ -281,12 +287,12 @@ class EditDealsForm extends StatefulWidget {
   final VoidCallback onRefresh;
 
   const EditDealsForm({
-    Key? key,
+    super.key,
     required this.productId,
     required this.discount,
     required this.saleEndTime,
     required this.onRefresh,
-  }) : super(key: key);
+  });
 
   @override
   State<EditDealsForm> createState() => _EditDealsFormState();
@@ -297,7 +303,7 @@ class _EditDealsFormState extends State<EditDealsForm> {
   late TextEditingController _discountController;
   late TextEditingController _endDateController;
   late TextEditingController _endTimeController;
-  
+
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
 
@@ -347,7 +353,8 @@ class _EditDealsFormState extends State<EditDealsForm> {
 
     try {
       final response = await http.put(
-        Uri.parse('http://localhost:8000/best-deals/edit-deals/${widget.productId}/'),
+        Uri.parse(
+            'http://localhost:8000/best-deals/edit-deals/${widget.productId}/'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'discount': int.parse(_discountController.text),
@@ -356,18 +363,18 @@ class _EditDealsFormState extends State<EditDealsForm> {
       );
 
       if (response.statusCode == 200) {
-        Navigator.pop(context);
-        widget.onRefresh();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Deal updated successfully')),
-        );
+        if (mounted) {
+          Navigator.pop(context);
+          widget.onRefresh();
+          Toast.success(context, 'Deal updated successfully');
+        }
       } else {
         throw Exception('Failed to update deal');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error updating deal: $e')),
-      );
+      if (mounted) {
+        Toast.error(context, 'Error updating deal: $e');
+      }
     }
   }
 
@@ -469,28 +476,26 @@ class _EditDealsFormState extends State<EditDealsForm> {
     );
   }
 
-   @override
+  @override
   void initState() {
     super.initState();
-    
+
     // Convert UTC time to local time
     final localSaleEndTime = widget.saleEndTime.toLocal();
-    
+
     // Initialize the selected date and time from localSaleEndTime
     _selectedDate = localSaleEndTime;
-    _selectedTime = TimeOfDay(
-      hour: localSaleEndTime.hour,
-      minute: localSaleEndTime.minute
-    );
+    _selectedTime =
+        TimeOfDay(hour: localSaleEndTime.hour, minute: localSaleEndTime.minute);
 
     // Initialize controllers
-    _discountController = TextEditingController(text: widget.discount.toString());
+    _discountController =
+        TextEditingController(text: widget.discount.toString());
     _endDateController = TextEditingController(
-      text: DateFormat('yyyy-MM-dd').format(localSaleEndTime)
-    );
+        text: DateFormat('yyyy-MM-dd').format(localSaleEndTime));
     _endTimeController = TextEditingController(
-      text: "${localSaleEndTime.hour.toString().padLeft(2, '0')}:${localSaleEndTime.minute.toString().padLeft(2, '0')}"
-    );
+        text:
+            "${localSaleEndTime.hour.toString().padLeft(2, '0')}:${localSaleEndTime.minute.toString().padLeft(2, '0')}");
   }
 
   @override
