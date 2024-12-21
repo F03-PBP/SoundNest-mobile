@@ -3,9 +3,12 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:soundnest_mobile/products/models/product_entry.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'product_details.dart'; // Import the ProductDetailsPage
 
 class ProductEntryCards extends StatefulWidget {
-  const ProductEntryCards({super.key});
+  final String sortOption;
+
+  const ProductEntryCards({super.key, required this.sortOption});
 
   @override
   State<ProductEntryCards> createState() => _ProductEntryCardsState();
@@ -14,11 +17,10 @@ class ProductEntryCards extends StatefulWidget {
 class _ProductEntryCardsState extends State<ProductEntryCards> {
   Future<List<ProductEntry>> fetchProducts(CookieRequest request) async {
     try {
-      // Ini nanti diubah aja pas udh push pws yg updated
-      final response = await request.get('http://localhost:8000/api/products/');
-
-      // For debugging
-      print('API Response: $response');
+      // Send the sort option as a query parameter
+      final response = await request.get(
+        'http://localhost:8000/api/products/?sort=${widget.sortOption}',
+      );
 
       List<ProductEntry> listProduct = [];
       for (var d in response) {
@@ -46,120 +48,130 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
             snapshot.data!.isEmpty) {
           return const Center(
             child: Text(
-              'Belum ada data produk.',
+              'Belum ada data Produk.',
               style: TextStyle(fontSize: 20, color: Color(0xff59A5D8)),
             ),
           );
         } else {
-          return GridView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 0.7,
-            ),
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              final product = snapshot.data![index].fields;
-              return Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 4,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(
-                            20.0), // Add padding around the image
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(
-                                  20)), // Rounded corners for the image
-                          child: Image.asset(
-                            'assets/images/templateimage.png', // Replace with actual product image URL
-                            fit: BoxFit.contain,
-                            width: double.infinity,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            product.productName,
-                            style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Rp${product.price}',
-                            style: GoogleFonts.inter(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+          return Column(
+            children: [
+              Expanded(
+                child: GridView.builder(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 0.7,
+                  ),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    final product = snapshot.data![index].fields;
+
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductDetailsPage(
+                              productName: product.productName,
+                              price: product.price.toDouble(),
+                              rating: product.rating.toDouble(),
+                              reviews: product.reviews,
+                              description:
+                                  'Experience sound like never before with the ${product.productName} Headphones. Engineered for audiophiles and casual listeners alike, these headphones deliver immersive sound quality with deep bass, crisp highs, and a balanced midrange. Featuring advanced noise-cancellation technology, you can escape the hustle and bustle of your surroundings and dive into your music, podcasts, or calls without distractions.',
                             ),
                           ),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              Text(
-                                '${product.rating}',
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 4,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(20)),
+                                  child: Image.asset(
+                                    'assets/images/templateimage.png',
+                                    fit: BoxFit.contain,
+                                    width: double.infinity,
+                                  ),
                                 ),
                               ),
-                              const Icon(
-                                Icons.star,
-                                size: 14,
-                                color: Colors.amber,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    product.productName,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Rp${product.price}',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        '${product.rating}',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 14,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                      const Icon(
+                                        Icons.star,
+                                        size: 14,
+                                        color: Colors.amber,
+                                      ),
+                                      Text(
+                                        ' (${product.reviews} reviews)',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 14,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                              Text(
-                                ' (${product.reviews} reviews)',
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: IconButton(
-                          onPressed: () {
-                            // Add product to cart functionality
-                          },
-                          icon:
-                              const Icon(Icons.add_circle, color: Colors.brown),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
-              );
-            },
+              ),
+            ],
           );
         }
       },
