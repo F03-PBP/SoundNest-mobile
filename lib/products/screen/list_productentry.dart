@@ -3,6 +3,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:soundnest_mobile/products/models/product_entry.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:soundnest_mobile/widgets/toast.dart';
 import 'product_details.dart'; // Import the ProductDetailsPage
 
 class ProductEntryCards extends StatefulWidget {
@@ -30,7 +31,9 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
       }
       return listProduct;
     } catch (e) {
-      print('Error fetching products: $e');
+      if (mounted) {
+        Toast.error(context, 'Error fetching products: $e');
+      }
       return [];
     }
   }
@@ -75,6 +78,7 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ProductDetailsPage(
+                              productId: snapshot.data![index].pk,
                               productName: product.productName,
                               price: product.price.toDouble(),
                               rating: product.rating.toDouble(),
@@ -91,7 +95,7 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withValues(alpha: 0.1),
                               blurRadius: 4,
                               spreadRadius: 1,
                             ),
