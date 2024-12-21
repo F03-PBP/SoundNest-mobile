@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
 import 'package:soundnest_mobile/authentication/screen/login.dart';
-import 'package:soundnest_mobile/reviews/screen/reviews.dart';
+import 'package:soundnest_mobile/navbar/navbar.dart';
 
 class LogoPage extends StatefulWidget {
   const LogoPage({super.key});
@@ -25,8 +25,7 @@ class _LogoPageState extends State<LogoPage> {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ReviewsPage(
-                      productId: 'e87e8646-7fc1-429a-ad46-50349e44a99f'),
+                  builder: (context) => const MainNavigation(),
                 ) // TODO: Ganti ReviewsPage
                 );
           } else {
