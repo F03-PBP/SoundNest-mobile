@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:soundnest_mobile/authentication/models/user_model.dart';
 
+import 'package:soundnest_mobile/authentication/models/user_model.dart';
 import 'package:soundnest_mobile/authentication/screen/register.dart';
-import 'package:soundnest_mobile/discussions/forum_screen.dart';
-import 'package:soundnest_mobile/reviews/screen/reviews.dart';
+import 'package:soundnest_mobile/authentication/services/auth_service.dart';
 import 'package:soundnest_mobile/authentication/widgets/input.dart';
+import 'package:soundnest_mobile/navbar/navbar.dart';
+import 'package:soundnest_mobile/widgets/toast.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -23,8 +23,13 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    final userModel = Provider.of<UserModel>(context);
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+      ),
       body: Container(
         color: Colors.white,
         child: Align(
@@ -62,52 +67,34 @@ class _LoginPageState extends State<LoginPage> {
                       String username = _usernameController.text;
                       String password = _passwordController.text;
 
-                      // Untuk menyambungkan Android emulator dengan Django pada localhost,
-                      // gunakan URL http://10.0.2.2/
-                      final response = await request
-                          .login("http://127.0.0.1:8000/auth/flutter/login/", {
-                        'username': username,
-                        'password': password,
-                      });
+                      // AuthService
+                      final response = await AuthService.loginUser(
+                          request, username, password, userModel);
 
-                      if (request.loggedIn) {
-                        String message = response['message'];
-                        String uname = response['username'];
-                        bool isSuperuser = response['is_superuser'] ?? false;
+                      if (context.mounted) {
+                        if (response['success']) {
+                          // Get data dari response
+                          String message = response['data']['message'];
+                          String uname = response['data']['username'];
+                          bool isSuperuser =
+                              response['data']['is_superuser'] ?? false;
+                          String userToken = response['data']['token'];
 
-                        if (context.mounted) {
-                          Provider.of<UserModel>(context, listen: false)
-                              .setUser(uname, isSuperuser);
+                          Provider.of<UserModel>(context,
+                                  listen: false) // Pass data ke UserModel
+                              .setUser(uname, isSuperuser, userToken);
 
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const ForumScreen()),
+                                builder: (context) => const MainNavigation()),
                           );
-                          ScaffoldMessenger.of(context)
-                            ..hideCurrentSnackBar()
-                            ..showSnackBar(
-                              SnackBar(
-                                  content:
-                                      Text("$message Selamat datang, $uname.")),
-                            );
-                        }
-                      } else {
-                        if (context.mounted) {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Login Gagal'),
-                              content: Text(response['message']),
-                              actions: [
-                                TextButton(
-                                  child: const Text('OK'),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              ],
-                            ),
+
+                          Toast.success(context, "$message Welcome, $uname!");
+                        } else {
+                          Toast.error(
+                            context,
+                            response['message'],
                           );
                         }
                       }
@@ -115,7 +102,8 @@ class _LoginPageState extends State<LoginPage> {
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
                       minimumSize: const Size(double.infinity, 50),
-                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundColor:
+                          Theme.of(context).colorScheme.secondaryContainer,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
                     child: const Text(
@@ -136,15 +124,17 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     child: Text.rich(
                       TextSpan(
-                        text: 'Don\'t have an account? ', // Teks biasa
+                        text: 'Don\'t have an account? ',
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           fontSize: 14.0,
                         ),
                         children: const <TextSpan>[
                           TextSpan(
-                            text: 'Register', // Teks bold
-                            style: TextStyle(),
+                            text: 'Register',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
