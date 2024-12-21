@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:soundnest_mobile/authentication/models/user_model.dart';
 import 'package:soundnest_mobile/authentication/screen/login.dart';
+import 'package:soundnest_mobile/reviews/screen/reviews.dart';
 
 class LogoPage extends StatefulWidget {
   const LogoPage({super.key});
@@ -12,16 +16,28 @@ class _LogoPageState extends State<LogoPage> {
   @override
   void initState() {
     super.initState();
-
-    // Menunggu selama 3 detik sebelum berpindah ke halaman login
-    Future.delayed(const Duration(seconds: 3), () {
-      // Navigasi ke halaman login setelah 3 detik
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
-        );
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userModel = Provider.of<UserModel>(context, listen: false);
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          if (userModel.isLoggedIn) {
+            // Sudah pernah login
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ReviewsPage(
+                      productId: 'e87e8646-7fc1-429a-ad46-50349e44a99f'),
+                ) // TODO: Ganti ReviewsPage
+                );
+          } else {
+            // Belum login
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+            );
+          }
+        }
+      });
     });
   }
 
@@ -29,7 +45,7 @@ class _LogoPageState extends State<LogoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).colorScheme.secondary,
         child: const Center(
           child: Text(
             "SoundNest",
