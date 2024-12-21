@@ -6,15 +6,15 @@ import 'package:provider/provider.dart';
 import 'package:soundnest_mobile/BestDeals/models/sale.dart';
 import 'package:soundnest_mobile/BestDeals/widgets/product_card.dart';
 import 'package:soundnest_mobile/BestDeals/screens/add_to_deals_page.dart';
-import 'package:soundnest_mobile/authentication/models/user_model.dart'; 
+import 'package:soundnest_mobile/authentication/models/user_model.dart';
 
 class DealsCarouselItem extends StatelessWidget {
   final dynamic product;
-  
+
   const DealsCarouselItem({
-    Key? key,
+    super.key,
     required this.product,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,16 +37,22 @@ class DealsCarouselItem extends StatelessWidget {
           Expanded(
             flex: 1,
             child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(8.0),
-                bottomLeft: Radius.circular(8.0),
-              ),
-              child: Image.network(
-                'http://127.0.0.1:8000/static/images/templateimage.webp',
-                fit: BoxFit.contain,
-                height: double.infinity,
-              ),
-            ),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8.0),
+                  bottomLeft: Radius.circular(8.0),
+                ),
+                child: Image.asset(
+                  'assets/images/1.png',
+                  fit: BoxFit.contain,
+                  height: double.infinity,
+                )
+
+                // child: Image.network( // URL nya masi local
+                //   'http://127.0.0.1:8000/static/images/templateimage.webp',
+                //   fit: BoxFit.contain,
+                //   height: double.infinity,
+                // ),
+                ),
           ),
           // Right side - Product Details
           Expanded(
@@ -68,32 +74,33 @@ class DealsCarouselItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 8.0),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 4.0),
                     decoration: BoxDecoration(
-                      color: Colors.blue.shade100,
+                      color: const Color.fromARGB(255, 109, 188, 145),
                       borderRadius: BorderRadius.circular(4.0),
                     ),
                     child: Text(
                       'Up to ${product.discount}% Off',
-                      style: TextStyle(
-                        color: Colors.blue.shade800,
+                      style: const TextStyle(
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                   const SizedBox(height: 8.0),
                   Text(
-                    formatRupiah(product.price),
-                    style: const TextStyle(
+                    product.price != null ? formatRupiah(product.price) : '',
+                    style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
-                      color: Colors.blue,
+                      color: Theme.of(context).colorScheme.secondaryContainer,
                     ),
                   ),
                   const SizedBox(height: 4.0),
                   Text(
                     'Time remaining: ${product.timeRemaining}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.red,
                       fontSize: 12.0,
                     ),
@@ -106,7 +113,7 @@ class DealsCarouselItem extends StatelessWidget {
       ),
     );
   }
-  
+
   String formatRupiah(double value) {
     // Convert the number to an integer for formatting without decimals
     final intValue = value.toInt();
@@ -132,9 +139,9 @@ class DealsCarousel extends StatefulWidget {
   final List<dynamic> products;
 
   const DealsCarousel({
-    Key? key,
+    super.key,
     required this.products,
-  }) : super(key: key);
+  });
 
   @override
   State<DealsCarousel> createState() => _DealsCarouselState();
@@ -165,7 +172,7 @@ class _DealsCarouselState extends State<DealsCarousel> {
       } else {
         _currentPage = 0;
       }
-      
+
       if (_pageController.hasClients) {
         _pageController.animateToPage(
           _currentPage,
@@ -186,7 +193,7 @@ class _DealsCarouselState extends State<DealsCarousel> {
           margin: const EdgeInsets.symmetric(horizontal: 4.0),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: _currentPage == index ? Colors.blue : Colors.grey.shade300,
+            color: _currentPage == index ? Colors.brown : Colors.grey.shade300,
           ),
         );
       }),
@@ -204,7 +211,7 @@ class _DealsCarouselState extends State<DealsCarousel> {
             itemCount: widget.products.length,
             itemBuilder: (context, index) {
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 26.0),
                 child: DealsCarouselItem(product: widget.products[index]),
               );
             },
@@ -232,7 +239,7 @@ class FilterModal extends StatefulWidget {
   final VoidCallback onApplyFilter;
 
   const FilterModal({
-    Key? key,
+    super.key,
     required this.selectedPriceRange,
     required this.selectedRatingRange,
     required this.selectedDiscountRange,
@@ -240,7 +247,7 @@ class FilterModal extends StatefulWidget {
     required this.onRatingRangeChanged,
     required this.onDiscountRangeChanged,
     required this.onApplyFilter,
-  }) : super(key: key);
+  });
 
   @override
   State<FilterModal> createState() => _FilterModalState();
@@ -259,7 +266,8 @@ class _FilterModalState extends State<FilterModal> {
     _localDiscountRange = widget.selectedDiscountRange;
   }
 
-  void _handleOptionTap(String option, String currentValue, Function(String) onChanged) {
+  void _handleOptionTap(
+      String option, String currentValue, Function(String) onChanged) {
     // If the tapped option is already selected, set it to 'All' (unselect)
     // Otherwise, select the tapped option
     onChanged(option == currentValue ? 'All' : option);
@@ -319,7 +327,7 @@ class _FilterModalState extends State<FilterModal> {
             ['Below 500k', '500k to 1.5M', '1.5M to 3M', 'Above 3M'],
             (value) {
               setState(() {
-                 _handleOptionTap(value, _localPriceRange, (newValue) {
+                _handleOptionTap(value, _localPriceRange, (newValue) {
                   _localPriceRange = newValue;
                 });
               });
@@ -339,7 +347,6 @@ class _FilterModalState extends State<FilterModal> {
             },
           ),
           const SizedBox(height: 24.0),
-
           ElevatedButton(
             onPressed: () {
               widget.onPriceRangeChanged(_localPriceRange);
@@ -347,11 +354,11 @@ class _FilterModalState extends State<FilterModal> {
               widget.onDiscountRangeChanged(_localDiscountRange);
               // Close the modal
               Navigator.of(context).pop();
-              
+
               widget.onApplyFilter();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
+              backgroundColor: const Color(0xFF3D5232),
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
@@ -401,14 +408,17 @@ class _FilterModalState extends State<FilterModal> {
                   vertical: 8.0,
                 ),
                 decoration: BoxDecoration(
-                  color: isSelected ? Colors.blue : Colors.grey.shade100,
+                  color: isSelected
+                      ? const Color(0xFF8FC274)
+                      : Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 child: Text(
                   option,
                   style: TextStyle(
                     color: isSelected ? Colors.white : Colors.black87,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
               ),
@@ -445,7 +455,8 @@ class _BestDealsPageState extends State<BestDealsPage> {
   }
 
   Future<Sale> fetchSaleData() async {
-    final response = await http.get(Uri.parse('http://localhost:8000/best-deals/json/'));
+    final response =
+        await http.get(Uri.parse('http://localhost:8000/best-deals/json/'));
 
     if (response.statusCode == 200) {
       final sale = Sale.fromJson(jsonDecode(response.body));
@@ -475,13 +486,17 @@ class _BestDealsPageState extends State<BestDealsPage> {
         selectedPriceRange: _selectedPriceRange,
         selectedRatingRange: _selectedRatingRange,
         selectedDiscountRange: _selectedDiscountRange,
-        onPriceRangeChanged: (value) => setState(() => _selectedPriceRange = value),
-        onRatingRangeChanged: (value) => setState(() => _selectedRatingRange = value),
-        onDiscountRangeChanged: (value) => setState(() => _selectedDiscountRange = value),
+        onPriceRangeChanged: (value) =>
+            setState(() => _selectedPriceRange = value),
+        onRatingRangeChanged: (value) =>
+            setState(() => _selectedRatingRange = value),
+        onDiscountRangeChanged: (value) =>
+            setState(() => _selectedDiscountRange = value),
         onApplyFilter: () {
-          if (mounted && _currentSaleData != null) {  // Check if we have the data
+          if (mounted && _currentSaleData != null) {
+            // Check if we have the data
             setState(() {
-              _filterProducts(_currentSaleData!);  // Use the stored sale data
+              _filterProducts(_currentSaleData!); // Use the stored sale data
             });
           }
         },
@@ -505,7 +520,8 @@ class _BestDealsPageState extends State<BestDealsPage> {
   }
 
   bool _matchesFilter(product) {
-    bool matchesSearchQuery = product.productName.toLowerCase().contains(_searchQuery.toLowerCase());
+    bool matchesSearchQuery =
+        product.productName.toLowerCase().contains(_searchQuery.toLowerCase());
 
     // Price filter
     bool matchesPrice = _priceMatches(product);
@@ -516,7 +532,10 @@ class _BestDealsPageState extends State<BestDealsPage> {
     // Discount filter
     bool matchesDiscount = _discountMatches(product);
 
-    return matchesSearchQuery && matchesPrice && matchesRating && matchesDiscount;
+    return matchesSearchQuery &&
+        matchesPrice &&
+        matchesRating &&
+        matchesDiscount;
   }
 
   bool _priceMatches(product) {
@@ -563,10 +582,14 @@ class _BestDealsPageState extends State<BestDealsPage> {
   @override
   Widget build(BuildContext context) {
     final userModel = Provider.of<UserModel>(context);
-    
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Best Deals'),
+        backgroundColor: const Color.fromARGB(193, 191, 162, 132),
+        title: const Padding(
+          padding: EdgeInsets.only(top: 8.0),
+          child: Text('Best Deals'),
+        ),
       ),
       body: FutureBuilder<Sale>(
         future: saleData,
@@ -595,8 +618,18 @@ class _BestDealsPageState extends State<BestDealsPage> {
             children: [
               // Search and Filter Bar
               Container(
-                padding: const EdgeInsets.all(16.0),
-                color: Colors.blue,
+                padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      const Color.fromARGB(193, 191, 162, 132),
+                      Theme.of(context).colorScheme.secondaryContainer,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0.2, 1.0],
+                  ),
+                ),
                 child: Row(
                   children: [
                     Expanded(
@@ -619,7 +652,8 @@ class _BestDealsPageState extends State<BestDealsPage> {
                             hintText: 'Search for products',
                             prefixIcon: Icon(Icons.search),
                             border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 12.0),
                           ),
                         ),
                       ),
@@ -633,44 +667,52 @@ class _BestDealsPageState extends State<BestDealsPage> {
                 ),
               ),
 
+              const SizedBox(height: 24.0),
               // Carousel
               if (carouselProducts.isNotEmpty)
                 DealsCarousel(products: carouselProducts),
 
               const SizedBox(height: 16.0),
               if (userModel.isSuperuser)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AddToDealsPage(),
-                          ),
-                        ).then((_) {
-                          // Refresh the deals list when returning from add page
-                          setState(() {
-                            saleData = fetchSaleData();
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AddToDealsPage(),
+                            ),
+                          ).then((_) {
+                            // Refresh the deals list when returning from add page
+                            setState(() {
+                              saleData = fetchSaleData();
+                            });
                           });
-                        });
-                      },
-                      icon: const Icon(Icons.add),
-                      label: const Text('Add to Deals'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        },
+                        icon: const Icon(Icons.add),
+                        label: const Text('Add to Deals'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 8.0),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               const SizedBox(height: 16.0),
 
               const SectionHeader(title: 'Top Picks (sorted by rating)'),
               bestDealsGrid(filteredTopPicks),
 
-              const SectionHeader(title: 'Least Countdown (sorted by time remaining)'),
+              const SectionHeader(
+                  title: 'Least Countdown (sorted by time remaining)'),
               bestDealsGrid(filteredLeastCountdown),
+
+              const SizedBox(height: 8.0),
             ],
           );
         },
@@ -679,37 +721,40 @@ class _BestDealsPageState extends State<BestDealsPage> {
   }
 
   Widget bestDealsGrid(List<dynamic> productData) {
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
-        crossAxisSpacing: 16.0,
-        mainAxisSpacing: 16.0,
-        childAspectRatio: 0.75, // Adjust this value to control card height
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(32, 8, 32, 20),
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
+          crossAxisSpacing: 16.0,
+          mainAxisSpacing: 16.0,
+          childAspectRatio: 0.65, // Adjust this value to control card height
+        ),
+        itemCount: productData.length,
+        itemBuilder: (context, index) {
+          var item = productData[index];
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              return ProductCard(
+                imageUrl: 'assets/images/1.png',
+                title: item.productName,
+                originalPrice: item.originalPrice.toDouble(),
+                discountedPrice: item.price.toDouble(),
+                rating: item.rating.toDouble(),
+                numRatings: item.reviews,
+                discount: item.discount.toDouble(),
+                timeRemaining: item.timeRemaining,
+                maxWidth: constraints.maxWidth,
+                id: item.id,
+                saleEndTime: item.saleEndTime,
+                onDelete: () => refreshDealsList(),
+              );
+            },
+          );
+        },
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
       ),
-      itemCount: productData.length,
-      itemBuilder: (context, index) {
-        var item = productData[index];
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            return ProductCard(
-              imageUrl: 'http://127.0.0.1:8000/static/images/templateimage.webp',
-              title: item.productName,
-              originalPrice: item.originalPrice,
-              discountedPrice: item.price,
-              rating: item.rating,
-              numRatings: item.reviews,
-              discount: item.discount,
-              timeRemaining: item.timeRemaining,
-              maxWidth: constraints.maxWidth,
-              id: item.id,
-              saleEndTime: item.saleEndTime,
-              onDelete: () => refreshDealsList(),
-            );
-          },
-        );
-      },
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
     );
   }
 }
@@ -721,7 +766,7 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
       child: Text(
         title,
         style: const TextStyle(

@@ -181,6 +181,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       _showAll
                                           ? 'View Less'
                                           : 'View More Reviews',
+                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white, // Text color

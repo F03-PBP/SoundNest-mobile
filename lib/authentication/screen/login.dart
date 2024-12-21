@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:soundnest_mobile/BestDeals/screens/list_bestdeals.dart';
 
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
-
 import 'package:soundnest_mobile/authentication/screen/register.dart';
 import 'package:soundnest_mobile/authentication/services/auth_service.dart';
 import 'package:soundnest_mobile/authentication/widgets/input.dart';

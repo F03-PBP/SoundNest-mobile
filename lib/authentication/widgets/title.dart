@@ -71,8 +71,7 @@ class TitleBox extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.25),
-            // sebelumnya pas nge pull pake ini tapi error jadi w ubah sementara:
-            // color: Colors.black.withValues(alpha: 0.25), 
+            // color: Colors.black.withValues(alpha: 0.25), // ini kalo flutter upgrade
             blurRadius: 4,
             offset: const Offset(0, 4),
           ),
