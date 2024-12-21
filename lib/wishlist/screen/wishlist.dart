@@ -85,7 +85,9 @@ class _WishlistPageState extends State<WishlistPage> {
     if (response['status'] == 'success') {
       setState(() {}); // Menyegarkan tampilan setelah penghapusan
     } else {
-      Toast.error(context, 'Failed to delete product');
+      if (mounted) {
+        Toast.error(context, 'Failed to delete product');
+      }
     }
   }
 
@@ -111,7 +113,9 @@ class _WishlistPageState extends State<WishlistPage> {
       setState(() {}); // Menyegarkan tampilan setelah pengeditan
     } else {
       // Menangani error jika pengeditan gagal
-      Toast.error(context, 'Failed to update quantity');
+      if (mounted) {
+        Toast.error(context, 'Failed to update quantity');
+      }
     }
   }
 
@@ -197,6 +201,12 @@ class _WishlistPageState extends State<WishlistPage> {
                                     );
                                   },
                                   child: const Text('Add New Product'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {});
+                                  },
+                                  child: const Text('Refresh'),
                                 ),
                                 DropdownButton<String>(
                                   value: _sortOption,
