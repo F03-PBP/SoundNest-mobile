@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:soundnest_mobile/authentication/models/user_model.dart';
 import 'package:soundnest_mobile/products/screen/list_productentry.dart';
 import 'package:soundnest_mobile/products/screen/productentry_form.dart'; // Import the ProductEntryForm
 
-class ProductPage extends StatelessWidget {
+class ProductPage extends StatefulWidget {
   const ProductPage({super.key});
 
-  void _showSortOptions(
-      BuildContext context, ValueNotifier<String> sortNotifier) {
+  @override
+  State<ProductPage> createState() => _ProductPageState();
+}
+
+class _ProductPageState extends State<ProductPage> {
+  final ValueNotifier<String> sortNotifier = ValueNotifier<String>("latest");
+
+  void _showSortOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -53,7 +61,7 @@ class ProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ValueNotifier<String> sortNotifier = ValueNotifier<String>("latest");
+    final user = Provider.of<UserModel>(context);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF4F4F4),
@@ -61,16 +69,7 @@ class ProductPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).colorScheme.secondaryContainer,
-                  Theme.of(context).colorScheme.secondary,
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
+            color: const Color(0xFF362417),
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(24, 110, 16, 28),
             child: const Text(
@@ -89,36 +88,43 @@ class ProductPage extends StatelessWidget {
               children: [
                 IconButton(
                   icon: const Icon(Icons.tune),
-                  onPressed: () => _showSortOptions(context, sortNotifier),
+                  onPressed: () => _showSortOptions(context),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    // Navigate to the ProductEntryForm when the button is clicked
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ProductEntryForm(),
+                if (user.isSuperuser)
+                  ElevatedButton(
+                    onPressed: () {
+                      // Navigate to the ProductEntryForm and refresh the product list on success
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductEntryForm(
+                            onProductAdded: () {
+                              setState(() {
+                                // Rebuild the widget to refresh the product list
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 168, 115, 77),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 168, 115, 77),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                  ),
-                  child: const Text(
-                    'Tambah Produk',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                    child: const Text(
+                      'Tambah Produk',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),

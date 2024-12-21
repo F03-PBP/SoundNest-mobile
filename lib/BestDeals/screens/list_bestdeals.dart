@@ -42,7 +42,7 @@ class DealsCarouselItem extends StatelessWidget {
                   bottomLeft: Radius.circular(8.0),
                 ),
                 child: Image.asset(
-                  'assets/images/templateimage.png',
+                  'assets/images/1.png',
                   fit: BoxFit.contain,
                   height: double.infinity,
                 )
@@ -77,20 +77,20 @@ class DealsCarouselItem extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8.0, vertical: 4.0),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFAFDF95),
+                      color: const Color.fromARGB(255, 109, 188, 145),
                       borderRadius: BorderRadius.circular(4.0),
                     ),
                     child: Text(
                       'Up to ${product.discount}% Off',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                      style: const TextStyle(
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                   const SizedBox(height: 8.0),
                   Text(
-                    formatRupiah(product.price),
+                    product.price != null ? formatRupiah(product.price) : '',
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
@@ -623,8 +623,11 @@ class _BestDealsPageState extends State<BestDealsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF8FC274),
-        title: const Text('Best Deals'),
+        backgroundColor: const Color.fromARGB(193, 191, 162, 132),
+        title: const Padding(
+          padding: EdgeInsets.only(top: 8.0),
+          child: Text('Best Deals'),
+        ),
       ),
       body: FutureBuilder<Sale>(
         future: saleData,
@@ -654,15 +657,15 @@ class _BestDealsPageState extends State<BestDealsPage> {
               // Search and Filter Bar
               Container(
                 padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Color(0xFF8FC274),
-                      Color.fromARGB(159, 191, 162, 132),
+                      const Color.fromARGB(193, 191, 162, 132),
+                      Theme.of(context).colorScheme.secondaryContainer,
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    stops: [0.2, 1.0],
+                    stops: const [0.2, 1.0],
                   ),
                 ),
                 child: Row(
@@ -772,13 +775,13 @@ class _BestDealsPageState extends State<BestDealsPage> {
           return LayoutBuilder(
             builder: (context, constraints) {
               return ProductCard(
-                imageUrl: 'assets/images/templateimage.png',
+                imageUrl: 'assets/images/1.png',
                 title: item.productName,
-                originalPrice: item.originalPrice,
-                discountedPrice: item.price,
-                rating: item.rating,
+                originalPrice: item.originalPrice.toDouble(),
+                discountedPrice: item.price.toDouble(),
+                rating: item.rating.toDouble(),
                 numRatings: item.reviews,
-                discount: item.discount,
+                discount: item.discount.toDouble(),
                 timeRemaining: item.timeRemaining,
                 maxWidth: constraints.maxWidth,
                 id: item.id,
