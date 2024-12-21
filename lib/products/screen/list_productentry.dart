@@ -104,7 +104,9 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
+                            SizedBox(
+                              height:
+                                  146, // Adjust height to make the image bigger
                               child: Padding(
                                 padding: const EdgeInsets.all(20.0),
                                 child: ClipRRect(
@@ -112,14 +114,19 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                                       top: Radius.circular(20)),
                                   child: Image.asset(
                                     'assets/images/templateimage.png',
-                                    fit: BoxFit.contain,
+                                    fit:
+                                        BoxFit.contain, // Keep the aspect ratio
                                     width: double.infinity,
                                   ),
                                 ),
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(20.0),
+                              padding: const EdgeInsets.only(
+                                  top: 20.0,
+                                  left: 20.0,
+                                  right: 20.0,
+                                  bottom: 4),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -136,7 +143,7 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                                   Text(
                                     'Rp${product.price}',
                                     style: GoogleFonts.inter(
-                                      fontSize: 22,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black,
                                     ),
@@ -161,6 +168,52 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                                         style: GoogleFonts.inter(
                                           fontSize: 14,
                                           color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .end, // Align icons to the right
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          // Implement edit functionality here
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(
+                                              10), // Increase padding for larger size
+                                          decoration: const BoxDecoration(
+                                            color: Color(0xFF362417),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.edit,
+                                            color: Colors.white,
+                                            size: 20, // Increase icon size
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                          width:
+                                              12), // Space between Edit and Delete icons
+                                      GestureDetector(
+                                        onTap: () {
+                                          // Implement delete functionality here
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(
+                                              10), // Increase padding for larger size
+                                          decoration: const BoxDecoration(
+                                            color: Colors.red,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.delete,
+                                            color: Colors.white,
+                                            size: 20, // Increase icon size
+                                          ),
                                         ),
                                       ),
                                     ],
