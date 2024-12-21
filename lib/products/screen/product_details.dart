@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:soundnest_mobile/reviews/screen/reviews.dart';
 
 class ProductDetailsPage extends StatelessWidget {
+  final String productId;
   final String productName;
   final double price;
   final double rating;
@@ -9,6 +11,7 @@ class ProductDetailsPage extends StatelessWidget {
 
   const ProductDetailsPage({
     super.key,
+    required this.productId,
     required this.productName,
     required this.price,
     required this.rating,
@@ -39,7 +42,8 @@ class ProductDetailsPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.only(
+              left: 32.0, right: 32.0, top: 16.0, bottom: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -139,6 +143,11 @@ class ProductDetailsPage extends StatelessWidget {
                 ),
                 textAlign: TextAlign.justify,
               ),
+              const SizedBox(height: 44),
+
+              // Reviews Section
+              ReviewsPage(productId: productId),
+              const SizedBox(height: 16),
             ],
           ),
         ),
