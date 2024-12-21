@@ -159,104 +159,117 @@ class _ReviewsPageState extends State<ReviewsPage> {
               const SizedBox(height: 24.0),
 
               // Review List
-              ListView.builder(
-                itemCount: filteredReviews.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (BuildContext context, int index) {
-                  final review = filteredReviews[index];
-                  final isOwner = review.userName == userModel.username;
+              filteredReviews.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'Belum ada review untuk produk ini.',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: filteredReviews.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+                        final review = filteredReviews[index];
+                        final isOwner = review.userName == userModel.username;
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            child: Text(
-                              review.userInitials,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8.0),
-                          Text(
-                            review.userName,
-                            style: const TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const Spacer(),
-
-                          // Owner bisa hapus dan edit reviewnya sendiri
-                          if (isOwner || userModel.isSuperuser) ...[
-                            if (isOwner)
-                              IconButton(
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => ReviewModal(
-                                      productId: widget.productId,
-                                      existingReview: review,
-                                      onReviewAdded: _fetchReviews,
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  child: Text(
+                                    review.userInitials,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  );
-                                },
-                                icon: Icon(
-                                  Icons.edit,
-                                  color: Theme.of(context).colorScheme.primary,
-                                  size: 20.0,
+                                  ),
+                                ),
+                                const SizedBox(width: 8.0),
+                                Text(
+                                  review.userName,
+                                  style: const TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const Spacer(),
+
+                                // Owner bisa hapus dan edit reviewnya sendiri
+                                if (isOwner || userModel.isSuperuser) ...[
+                                  if (isOwner)
+                                    IconButton(
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => ReviewModal(
+                                            productId: widget.productId,
+                                            existingReview: review,
+                                            onReviewAdded: _fetchReviews,
+                                          ),
+                                        );
+                                      },
+                                      icon: Icon(
+                                        Icons.edit,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        size: 20.0,
+                                      ),
+                                    ),
+                                  IconButton(
+                                    onPressed: () => _deleteReview(review.id),
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                      size: 20.0,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                            const SizedBox(height: 16.0),
+                            Row(
+                              children: List.generate(
+                                10,
+                                (index) => Icon(
+                                  index < review.rating
+                                      ? Icons.star
+                                      : Icons.star_border,
+                                  color: const Color(0xFFE7B66B),
+                                  size: 16.0,
                                 ),
                               ),
-                            IconButton(
-                              onPressed: () => _deleteReview(review.id),
-                              icon: const Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                                size: 20.0,
+                            ),
+                            const SizedBox(height: 8.0),
+                            Text(
+                              review.description,
+                              style: const TextStyle(
+                                fontSize: 14.0,
                               ),
                             ),
+                            const SizedBox(height: 8.0),
+                            Text(
+                              'Time: ${review.updatedAt}',
+                              style: const TextStyle(
+                                fontSize: 12.0,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(height: 24.0),
                           ],
-                        ],
-                      ),
-                      const SizedBox(height: 16.0),
-                      Row(
-                        children: List.generate(
-                          10,
-                          (index) => Icon(
-                            index < review.rating
-                                ? Icons.star
-                                : Icons.star_border,
-                            color: const Color(0xFFE7B66B),
-                            size: 16.0,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8.0),
-                      Text(
-                        review.description,
-                        style: const TextStyle(
-                          fontSize: 14.0,
-                        ),
-                      ),
-                      const SizedBox(height: 8.0),
-                      Text(
-                        'Time: ${review.updatedAt}',
-                        style: const TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      const SizedBox(height: 24.0),
-                    ],
-                  );
-                },
-              ),
+                        );
+                      },
+                    ),
             ],
           );
   }

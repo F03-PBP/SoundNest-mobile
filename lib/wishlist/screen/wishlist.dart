@@ -20,7 +20,8 @@ class _WishlistPageState extends State<WishlistPage> {
 
   // Fungsi untuk mengambil data produk wishlist dari Django
   Future<List<WishlistProduct>> fetchWishlist(CookieRequest request) async {
-    final response = await request.get('http://127.0.0.1:8000/wishlist/json/wishlist');
+    final response =
+        await request.get('http://127.0.0.1:8000/wishlist/json/wishlist');
     var data = response;
     List<WishlistProduct> listProduct = [];
     for (var d in data) {
@@ -38,7 +39,8 @@ class _WishlistPageState extends State<WishlistPage> {
 
   // Fungsi untuk menghitung total harga produk
   int calculateTotalHarga(List<WishlistProduct> data) {
-    return data.fold(0, (sum, item) => sum + (item.fields.jumlah * item.fields.price));
+    return data.fold(
+        0, (sum, item) => sum + (item.fields.jumlah * item.fields.price));
   }
 
   // Fungsi untuk berpindah ke halaman berikutnya
@@ -76,7 +78,9 @@ class _WishlistPageState extends State<WishlistPage> {
 
   // Fungsi untuk menghapus produk dari wishlist berdasarkan ID
   Future<void> deleteProduct(CookieRequest request, String productId) async {
-    final response = await request.post('http://127.0.0.1:8000/wishlist/delete_flutter/', {'productId': productId});
+    final response = await request.post(
+        'http://127.0.0.1:8000/wishlist/delete_flutter/',
+        {'productId': productId});
     if (response['status'] == 'success') {
       setState(() {}); // Menyegarkan tampilan setelah penghapusan
     } else {
@@ -89,7 +93,8 @@ class _WishlistPageState extends State<WishlistPage> {
   }
 
   // Fungsi untuk mengedit quantity produk
-  Future<void> editProductQuantity(CookieRequest request, String productId, int newQuantity) async {
+  Future<void> editProductQuantity(
+      CookieRequest request, String productId, int newQuantity) async {
     if (newQuantity < 0) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Quantity must be greater than or equal to 0'),
@@ -118,7 +123,6 @@ class _WishlistPageState extends State<WishlistPage> {
       ));
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -154,204 +158,263 @@ class _WishlistPageState extends State<WishlistPage> {
 
               return Column(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Theme.of(context).colorScheme.secondaryContainer,
-                          Theme.of(context).colorScheme.secondary,
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          // Header Your Wishlist
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .secondaryContainer,
+                                  Theme.of(context).colorScheme.secondary,
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
+                            ),
+                            width: double.infinity,
+                            padding: const EdgeInsets.fromLTRB(32, 110, 16, 28),
+                            child: const Text(
+                              'Your Wishlist!',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          // Bagian Add New Product dan Sort Option
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 32.0, vertical: 16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ProductEntryFormPage(),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('Add New Product'),
+                                ),
+                                DropdownButton<String>(
+                                  value: _sortOption,
+                                  items: [
+                                    "Price (asc)",
+                                    "Quantity (asc)",
+                                    "Price (desc)",
+                                    "Quantity (desc)"
+                                  ].map((String value) {
+                                    return DropdownMenuItem<String>(
+                                        value: value, child: Text(value));
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      _sortOption = newValue!;
+                                    });
+                                  },
+                                  dropdownColor: Colors.white,
+                                  style: const TextStyle(color: Colors.black),
+                                  underline: Container(),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Total Produk dan Total Harga
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('Total Produk: $totalProduk',
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                const SizedBox(width: 16),
+                                Text('Total Harga: $totalHarga',
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          // Daftar Produk
+                          ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap:
+                                true, // Agar tidak mengganggu SingleChildScrollView
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30.0, vertical: 16.0),
+                            itemCount: currentPageData.length,
+                            itemBuilder: (_, index) => Container(
+                              margin: const EdgeInsets.only(bottom: 16.0),
+                              padding: const EdgeInsets.all(16.0),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8.0),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Gambar produk
+                                  SizedBox(
+                                    height: 120,
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(
+                                          top: Radius.circular(20)),
+                                      child: Image.asset(
+                                        'assets/images/9.png',
+                                        fit: BoxFit.contain,
+                                        width: double.infinity,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  // Nama Produk
+                                  Text(
+                                    currentPageData[index].fields.namaProduk,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.0,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 5),
+                                  // Harga Produk
+                                  Text(
+                                    'Price: \$${currentPageData[index].fields.price}',
+                                    style: const TextStyle(fontSize: 14),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  // Jumlah Produk
+                                  Text(
+                                    'Quantity: ${currentPageData[index].fields.jumlah}',
+                                    style: const TextStyle(fontSize: 14),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  // Tombol Edit dan Delete
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () {
+                                          deleteProduct(
+                                              request,
+                                              currentPageData[index]
+                                                  .pk
+                                                  .toString());
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.edit,
+                                            color: Colors.brown),
+                                        onPressed: () {
+                                          int currentQuantity =
+                                              currentPageData[index]
+                                                  .fields
+                                                  .jumlah;
+                                          TextEditingController
+                                              quantityController =
+                                              TextEditingController(
+                                                  text: currentQuantity
+                                                      .toString());
+
+                                          showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                              title:
+                                                  const Text('Edit Quantity'),
+                                              content: TextField(
+                                                controller: quantityController,
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                decoration:
+                                                    const InputDecoration(
+                                                        labelText:
+                                                            'New Quantity'),
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text('Cancel'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    int newQuantity = int.parse(
+                                                        quantityController
+                                                            .text);
+                                                    editProductQuantity(
+                                                        request,
+                                                        currentPageData[index]
+                                                            .pk
+                                                            .toString(),
+                                                        newQuantity);
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text('Save'),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                    ),
-                    width: double.infinity,
-                    padding: const EdgeInsets.fromLTRB(24, 110, 16, 28),
-                    child: const Text(
-                      'Your Wishlist!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
+
+                  // Tombol Previous dan Next
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Wrap(
-                          spacing: 8.0, // Memberi jarak antar elemen
-                          runSpacing: 8.0, // Memberi jarak antar baris
-                          children: [
-                            // Tombol Add New Product
-                            ElevatedButton(
-                              onPressed: () {
-                                
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const ProductEntryFormPage(),
-                                  ),
-                                );
-                              },
-                              child: const Text('Add New Product'),
-                            ),
-                            // Dropdown untuk sort option
-                            DropdownButton<String>(
-                              value: _sortOption,
-                              items: ["Price (asc)", "Quantity (asc)", "Price (desc)", "Quantity (desc)"]
-                                  .map((String value) {
-                                    return DropdownMenuItem<String>(value: value, child: Text(value));
-                                  }).toList(),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  _sortOption = newValue!;
-                                });
-                              },
-                              dropdownColor: Colors.white,
-                              style: TextStyle(color: Colors.black),
-                              underline: Container(),
-                            ),
-                            // Tombol Previous
-                            ElevatedButton(
-                              onPressed: _previousPage,
-                              child: const Text('Previous'),
-                            ),
-                            // Tombol Next
-                            ElevatedButton(
-                              onPressed: () => _nextPage(snapshot.data!),
-                              child: const Text('Next'),
-                            ),
-                          ],
+                        ElevatedButton(
+                          onPressed: _previousPage,
+                          child: const Text('Previous'),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton(
+                          onPressed: () => _nextPage(snapshot.data!),
+                          child: const Text('Next'),
                         ),
                       ],
                     ),
                   ),
-
-                  Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Wrap(
-                    alignment: WrapAlignment.spaceBetween,
-                    children: [
-                      Text('Total Produk: $totalProduk',
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                      Text('Total Harga: $totalHarga',
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                )
-                ,Expanded(
-                    child: ListView.builder(
-                      padding: const EdgeInsets.all(16.0),
-                      itemCount: currentPageData.length,
-                      itemBuilder: (_, index) => Container(
-                        margin: const EdgeInsets.only(bottom: 16.0),
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Gambar produk
-                            SizedBox(
-                              height: 120, // Adjust height to fit well in smaller screens
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                                child: Image.asset(
-                                  'assets/images/templateimage.png', // Ganti dengan path gambar yang sesuai
-                                  fit: BoxFit.contain,
-                                  width: double.infinity,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            // Nama Produk
-                            Text(
-                              currentPageData[index].fields.namaProduk,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.0,
-                              ),
-                              overflow: TextOverflow.ellipsis, // Prevent overflow with ellipsis
-                            ),
-                            const SizedBox(height: 5),
-                            // Harga Produk
-                            Text(
-                              'Price: \$${currentPageData[index].fields.price}',
-                              style: const TextStyle(fontSize: 14),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            // Jumlah Produk
-                            Text(
-                              'Quantity: ${currentPageData[index].fields.jumlah}',
-                              style: const TextStyle(fontSize: 14),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 12),
-                            // Tombol Edit dan Delete
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.delete),
-                                  onPressed: () {
-                                    deleteProduct(request, currentPageData[index].pk.toString());
-                                  },
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.edit),
-                                  onPressed: () {
-                                    int currentQuantity = currentPageData[index].fields.jumlah;
-                                    TextEditingController quantityController = TextEditingController(text: currentQuantity.toString());
-
-                                    showDialog(
-                                      context: context,
-                                      builder: (_) => AlertDialog(
-                                        title: const Text('Edit Quantity'),
-                                        content: TextField(
-                                          controller: quantityController,
-                                          keyboardType: TextInputType.number,
-                                          decoration: const InputDecoration(labelText: 'New Quantity'),
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text('Cancel'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              int newQuantity = int.parse(quantityController.text);
-                                              editProductQuantity(request, currentPageData[index].pk.toString(), newQuantity);
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text('Save'),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
                 ],
               );
             }

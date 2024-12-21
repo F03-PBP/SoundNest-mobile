@@ -203,6 +203,13 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
         iconTheme: const IconThemeData(color: Colors.white),
         title:
             const Text('Add to Deals', style: TextStyle(color: Colors.white)),
+        leading: Transform.translate(
+          offset: const Offset(12, 0),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
       ),
       body: Form(
         key: _formKey,

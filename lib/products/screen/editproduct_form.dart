@@ -13,14 +13,14 @@ class EditProductForm extends StatefulWidget {
   final VoidCallback onProductUpdated;
 
   const EditProductForm({
-    Key? key,
+    super.key,
     required this.productId,
     required this.productName,
     required this.price,
     required this.rating,
     required this.reviews,
     required this.onProductUpdated,
-  }) : super(key: key);
+  });
 
   @override
   State<EditProductForm> createState() => _EditProductFormState();
@@ -49,9 +49,16 @@ class _EditProductFormState extends State<EditProductForm> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Produk"),
+        leading: Transform.translate(
+          offset: const Offset(12, 0),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
         child: Form(
           key: _formKey,
           child: Column(

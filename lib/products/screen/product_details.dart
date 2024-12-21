@@ -25,15 +25,15 @@ class ProductDetailsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 16.0),
+        leading: Transform.translate(
+          offset: const Offset(12, 0),
           child: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.pop(context),
           ),
         ),
+        backgroundColor: Colors.white,
+        elevation: 0,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),

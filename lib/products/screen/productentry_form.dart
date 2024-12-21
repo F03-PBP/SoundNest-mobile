@@ -28,9 +28,16 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add Product"),
+        leading: Transform.translate(
+          offset: const Offset(12, 0),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
         child: Form(
           key: _formKey,
           child: Column(

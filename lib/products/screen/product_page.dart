@@ -69,9 +69,18 @@ class _ProductPageState extends State<ProductPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            color: const Color(0xFF362417),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.secondaryContainer,
+                  Theme.of(context).colorScheme.secondary,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
             width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(24, 110, 16, 28),
+            padding: const EdgeInsets.fromLTRB(30, 110, 16, 28),
             child: const Text(
               'Products',
               style: TextStyle(
@@ -82,7 +91,7 @@ class _ProductPageState extends State<ProductPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
