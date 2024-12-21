@@ -167,7 +167,7 @@ class ReplyCard extends StatelessWidget {
                     Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
+                          icon: const Icon(Icons.edit, color: Colors.brown),
                           onPressed: () => onEdit(reply),
                         ),
                         IconButton(

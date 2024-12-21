@@ -3,6 +3,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
+import 'package:soundnest_mobile/authentication/screen/login.dart';
 import 'package:soundnest_mobile/authentication/services/auth_service.dart';
 import 'package:soundnest_mobile/authentication/widgets/title.dart';
 import 'package:soundnest_mobile/reviews/models/reviews_model.dart';
@@ -201,7 +202,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           if (context.mounted) {
                             if (response) {
                               userModel.logout();
-                              Navigator.pushReplacementNamed(context, '/login');
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginPage(),
+                                  ));
                               Toast.success(
                                   context, 'Successfully logged out.');
                             } else {

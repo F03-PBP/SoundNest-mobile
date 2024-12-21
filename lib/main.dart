@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
+import 'package:soundnest_mobile/authentication/screen/login.dart';
 import 'package:soundnest_mobile/authentication/screen/logo.dart';
+import 'package:soundnest_mobile/navbar/navbar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -83,11 +85,19 @@ class _SplashScreenState extends State<SplashScreen> {
           final userModel = Provider.of<UserModel>(context, listen: false);
           if (userModel.isLoggedIn) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushReplacementNamed(context, '/review');
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MainNavigation(),
+                  ));
             });
           } else {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushReplacementNamed(context, '/login');
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginPage(),
+                  ));
             });
           }
           return const SizedBox.shrink();

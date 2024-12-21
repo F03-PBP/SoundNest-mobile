@@ -26,8 +26,7 @@ class _LogoPageState extends State<LogoPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const MainNavigation(),
-                ) // TODO: Ganti ReviewsPage
-                );
+                ));
           } else {
             // Belum login
             Navigator.pushReplacement(

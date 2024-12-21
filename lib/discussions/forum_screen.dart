@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/material.dart';
+
 import 'forum_post.dart';
 import 'widgets/post_card.dart';
-import 'widgets/reply_card.dart';
+
 import 'package:soundnest_mobile/authentication/models/user_model.dart';
 
 class ForumScreen extends StatefulWidget {
@@ -338,7 +338,11 @@ class _ForumScreenState extends State<ForumScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Discussion Forums'),
+        backgroundColor: Colors.brown,
+        title: const Text(
+          'Discussion Forums',
+          style: TextStyle(color: Colors.white),
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -347,13 +351,13 @@ class _ForumScreenState extends State<ForumScreen> {
               child: Container(
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: Colors.white,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.add,
                   size: 28,
-                  color: Colors.white,
+                  color: Colors.brown,
                 ),
               ),
             ),
