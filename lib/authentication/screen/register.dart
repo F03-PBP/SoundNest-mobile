@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-
-import 'dart:convert';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
 import 'package:soundnest_mobile/authentication/screen/login.dart';
+import 'package:soundnest_mobile/authentication/services/auth_service.dart';
 import 'package:soundnest_mobile/authentication/widgets/input.dart';
+import 'package:soundnest_mobile/widgets/toast.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -95,40 +95,28 @@ class _RegisterPageState extends State<RegisterPage> {
                       String password1 = _passwordController.text;
                       String password2 = _confirmPasswordController.text;
 
-                      // Untuk menyambungkan Android emulator dengan Django pada localhost,
-                      // gunakan URL http://10.0.2.2/
-                      final response = await request.postJson(
-                          "http://127.0.0.1:8000/auth/flutter/register/",
-                          jsonEncode({
-                            "username": username,
-                            "password1": password1,
-                            "password2": password2,
-                          }));
+                      // AuthService
+                      final response = await AuthService.registerUser(
+                          request, username, password1, password2);
+
                       if (context.mounted) {
-                        if (response['status'] == 'success') {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Successfully registered!'),
-                            ),
-                          );
+                        if (response['success']) {
+                          Toast.success(context, 'Successfully registered!');
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => const LoginPage()),
                           );
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Failed to register!'),
-                            ),
-                          );
+                          Toast.error(context, 'Failed to register!');
                         }
                       }
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
                       minimumSize: const Size(double.infinity, 50),
-                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundColor:
+                          Theme.of(context).colorScheme.secondaryContainer,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
                     child: const Text('Register'),

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -14,27 +16,32 @@ class WishlistPage extends StatefulWidget {
 class _WishlistPageState extends State<WishlistPage> {
   int _currentPage = 1;
   final int _itemsPerPage = 4;
+  String _sortOption = "Price (asc)"; // Default sorting option
 
-  Future<List<WishlistProduct>> fetchMood(CookieRequest request) async {
+  // Fungsi untuk mengambil data produk wishlist dari Django
+  Future<List<WishlistProduct>> fetchWishlist(CookieRequest request) async {
     final response = await request.get('http://127.0.0.1:8000/wishlist/json/wishlist');
     var data = response;
-    List<WishlistProduct> listMood = [];
+    List<WishlistProduct> listProduct = [];
     for (var d in data) {
       if (d != null) {
-        listMood.add(WishlistProduct.fromJson(d));
+        listProduct.add(WishlistProduct.fromJson(d));
       }
     }
-    return listMood;
+    return listProduct;
   }
 
+  // Fungsi untuk menghitung total produk
   int calculateTotalProduk(List<WishlistProduct> data) {
     return data.fold(0, (sum, item) => sum + item.fields.jumlah);
   }
 
+  // Fungsi untuk menghitung total harga produk
   int calculateTotalHarga(List<WishlistProduct> data) {
     return data.fold(0, (sum, item) => sum + (item.fields.jumlah * item.fields.price));
   }
 
+  // Fungsi untuk berpindah ke halaman berikutnya
   void _nextPage(List<WishlistProduct> data) {
     if ((_currentPage * _itemsPerPage) < data.length) {
       setState(() {
@@ -43,6 +50,7 @@ class _WishlistPageState extends State<WishlistPage> {
     }
   }
 
+  // Fungsi untuk berpindah ke halaman sebelumnya
   void _previousPage() {
     if (_currentPage > 1) {
       setState(() {
@@ -51,15 +59,73 @@ class _WishlistPageState extends State<WishlistPage> {
     }
   }
 
+  // Fungsi untuk menyortir data wishlist
+  List<WishlistProduct> _sortData(List<WishlistProduct> data) {
+    List<WishlistProduct> sortedData = List.from(data);
+    if (_sortOption == "Price (asc)") {
+      sortedData.sort((a, b) => a.fields.price.compareTo(b.fields.price));
+    } else if (_sortOption == "Quantity (asc)") {
+      sortedData.sort((a, b) => a.fields.jumlah.compareTo(b.fields.jumlah));
+    } else if (_sortOption == "Price (desc)") {
+      sortedData.sort((a, b) => b.fields.price.compareTo(a.fields.price));
+    } else if (_sortOption == "Quantity (desc)") {
+      sortedData.sort((a, b) => b.fields.jumlah.compareTo(a.fields.jumlah));
+    }
+    return sortedData;
+  }
+
+  // Fungsi untuk menghapus produk dari wishlist berdasarkan ID
+  Future<void> deleteProduct(CookieRequest request, String productId) async {
+    final response = await request.post('http://127.0.0.1:8000/wishlist/delete_flutter/', {'productId': productId});
+    if (response['status'] == 'success') {
+      setState(() {}); // Menyegarkan tampilan setelah penghapusan
+    } else {
+      // Menangani error jika penghapusan gagal
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to delete product'),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
+
+  // Fungsi untuk mengedit quantity produk
+  Future<void> editProductQuantity(CookieRequest request, String productId, int newQuantity) async {
+    if (newQuantity < 0) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Quantity must be greater than or equal to 0'),
+        backgroundColor: Colors.red,
+      ));
+      return;
+    }
+
+    // Mengirim request POST dengan JSON payload menggunakan postJson
+    final response = await request.postJson(
+      'http://127.0.0.1:8000/wishlist/edit_quantity_flutter/',
+      jsonEncode({
+        'product_id': productId,
+        'new_quantity': newQuantity,
+      }), // Mengirim data sebagai JSON
+    );
+
+    // Mengecek status response
+    if (response['status'] == 'success') {
+      setState(() {}); // Menyegarkan tampilan setelah pengeditan
+    } else {
+      // Menangani error jika pengeditan gagal
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to update quantity'),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Wishlist!'),
-      ),
       body: FutureBuilder(
-        future: fetchMood(request),
+        future: fetchWishlist(request),
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.data == null) {
             return const Center(child: CircularProgressIndicator());
@@ -75,10 +141,11 @@ class _WishlistPageState extends State<WishlistPage> {
                 ],
               );
             } else {
-              List<WishlistProduct> currentPageData = snapshot.data!.sublist(
+              List<WishlistProduct> sortedData = _sortData(snapshot.data!);
+              List<WishlistProduct> currentPageData = sortedData.sublist(
                 (_currentPage - 1) * _itemsPerPage,
-                (_currentPage * _itemsPerPage > snapshot.data!.length)
-                    ? snapshot.data!.length
+                (_currentPage * _itemsPerPage > sortedData.length)
+                    ? sortedData.length
                     : _currentPage * _itemsPerPage,
               );
 
@@ -87,27 +154,100 @@ class _WishlistPageState extends State<WishlistPage> {
 
               return Column(
                 children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Theme.of(context).colorScheme.secondaryContainer,
+                          Theme.of(context).colorScheme.secondary,
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    width: double.infinity,
+                    padding: const EdgeInsets.fromLTRB(24, 110, 16, 28),
+                    child: const Text(
+                      'Your Wishlist!',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Column(
                       children: [
-                        Text('Total Produk: $totalProduk',
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
-                        Text('Total Harga: $totalHarga',
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
+                        Wrap(
+                          spacing: 8.0, // Memberi jarak antar elemen
+                          runSpacing: 8.0, // Memberi jarak antar baris
+                          children: [
+                            // Tombol Add New Product
+                            ElevatedButton(
+                              onPressed: () {
+                                
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const ProductEntryFormPage(),
+                                  ),
+                                );
+                              },
+                              child: const Text('Add New Product'),
+                            ),
+                            // Dropdown untuk sort option
+                            DropdownButton<String>(
+                              value: _sortOption,
+                              items: ["Price (asc)", "Quantity (asc)", "Price (desc)", "Quantity (desc)"]
+                                  .map((String value) {
+                                    return DropdownMenuItem<String>(value: value, child: Text(value));
+                                  }).toList(),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _sortOption = newValue!;
+                                });
+                              },
+                              dropdownColor: Colors.white,
+                              style: TextStyle(color: Colors.black),
+                              underline: Container(),
+                            ),
+                            // Tombol Previous
+                            ElevatedButton(
+                              onPressed: _previousPage,
+                              child: const Text('Previous'),
+                            ),
+                            // Tombol Next
+                            ElevatedButton(
+                              onPressed: () => _nextPage(snapshot.data!),
+                              child: const Text('Next'),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
-                  Expanded(
+
+                  Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    children: [
+                      Text('Total Produk: $totalProduk',
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text('Total Harga: $totalHarga',
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                )
+                ,Expanded(
                     child: ListView.builder(
+                      padding: const EdgeInsets.all(16.0),
                       itemCount: currentPageData.length,
                       itemBuilder: (_, index) => Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
-                        padding: const EdgeInsets.all(20.0),
+                        margin: const EdgeInsets.only(bottom: 16.0),
+                        padding: const EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(8.0),
@@ -121,57 +261,102 @@ class _WishlistPageState extends State<WishlistPage> {
                           ],
                         ),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "${currentPageData[index].fields.namaProduk}",
-                              style: const TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
+                            // Gambar produk
+                            SizedBox(
+                              height: 120, // Adjust height to fit well in smaller screens
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                                child: Image.asset(
+                                  'assets/images/templateimage.png', // Ganti dengan path gambar yang sesuai
+                                  fit: BoxFit.contain,
+                                  width: double.infinity,
+                                ),
                               ),
                             ),
-                            const SizedBox(height: 10),
-                            Text("${currentPageData[index].fields.dateAdded}"),
-                            const SizedBox(height: 10),
-                            Text("Jumlah: ${currentPageData[index].fields.jumlah}"),
-                            const SizedBox(height: 10),
-                            Text("Harga: ${currentPageData[index].fields.price}"),
+                            const SizedBox(height: 8),
+                            // Nama Produk
+                            Text(
+                              currentPageData[index].fields.namaProduk,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0,
+                              ),
+                              overflow: TextOverflow.ellipsis, // Prevent overflow with ellipsis
+                            ),
+                            const SizedBox(height: 5),
+                            // Harga Produk
+                            Text(
+                              'Price: \$${currentPageData[index].fields.price}',
+                              style: const TextStyle(fontSize: 14),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            // Jumlah Produk
+                            Text(
+                              'Quantity: ${currentPageData[index].fields.jumlah}',
+                              style: const TextStyle(fontSize: 14),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 12),
+                            // Tombol Edit dan Delete
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    deleteProduct(request, currentPageData[index].pk.toString());
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.edit),
+                                  onPressed: () {
+                                    int currentQuantity = currentPageData[index].fields.jumlah;
+                                    TextEditingController quantityController = TextEditingController(text: currentQuantity.toString());
+
+                                    showDialog(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                        title: const Text('Edit Quantity'),
+                                        content: TextField(
+                                          controller: quantityController,
+                                          keyboardType: TextInputType.number,
+                                          decoration: const InputDecoration(labelText: 'New Quantity'),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Cancel'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              int newQuantity = int.parse(quantityController.text);
+                                              editProductQuantity(request, currentPageData[index].pk.toString(), newQuantity);
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Save'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: _previousPage,
-                        child: const Text('Previous'),
-                      ),
-                      const SizedBox(width: 16),
-                      ElevatedButton(
-                        onPressed: () => _nextPage(snapshot.data!),
-                        child: const Text('Next'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
+
                 ],
               );
             }
           }
         },
-      ),
-      floatingActionButton: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const ProductEntryFormPage()),
-          );
-        },
-        child: const Text('Add New Product'),
       ),
     );
   }

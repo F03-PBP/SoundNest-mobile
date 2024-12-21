@@ -60,35 +60,37 @@ class _ProductEntryFormPageState extends State<ProductEntryFormPage> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: DropdownButtonFormField(
-                        decoration: InputDecoration(
-                          labelText: "Pilih Produk",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0),
+                      child: Expanded(
+                        child: DropdownButtonFormField(
+                          decoration: InputDecoration(
+                            labelText: "Pilih Produk",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
                           ),
+                          value: _selectedProductId.isEmpty
+                              ? null
+                              : _selectedProductId,
+                          items: products.entries
+                              .map(
+                                (entry) => DropdownMenuItem(
+                                  value: entry.key,
+                                  child: Text(entry.value),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (String? value) {
+                            setState(() {
+                              _selectedProductId = value!;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Produk harus dipilih!";
+                            }
+                            return null;
+                          },
                         ),
-                        value: _selectedProductId.isEmpty
-                            ? null
-                            : _selectedProductId,
-                        items: products.entries
-                            .map(
-                              (entry) => DropdownMenuItem(
-                                value: entry.key,
-                                child: Text(entry.value),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (String? value) {
-                          setState(() {
-                            _selectedProductId = value!;
-                          });
-                        },
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Produk harus dipilih!";
-                          }
-                          return null;
-                        },
                       ),
                     ),
                     
