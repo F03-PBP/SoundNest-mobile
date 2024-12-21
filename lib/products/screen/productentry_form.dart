@@ -4,7 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 
 class ProductEntryForm extends StatefulWidget {
-  const ProductEntryForm({Key? key}) : super(key: key);
+  final VoidCallback onProductAdded;
+
+  const ProductEntryForm({Key? key, required this.onProductAdded})
+      : super(key: key);
 
   @override
   State<ProductEntryForm> createState() => _ProductEntryFormState();
@@ -141,6 +144,8 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
                             content: Text("Product successfully created!"),
                           ),
                         );
+
+                        widget.onProductAdded();
 
                         // Navigate back to the product list page
                         Navigator.pop(context);

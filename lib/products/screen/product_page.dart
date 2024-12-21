@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:soundnest_mobile/products/screen/list_productentry.dart';
 import 'package:soundnest_mobile/products/screen/productentry_form.dart'; // Import the ProductEntryForm
 
-class ProductPage extends StatelessWidget {
+class ProductPage extends StatefulWidget {
   const ProductPage({super.key});
 
-  void _showSortOptions(
-      BuildContext context, ValueNotifier<String> sortNotifier) {
+  @override
+  State<ProductPage> createState() => _ProductPageState();
+}
+
+class _ProductPageState extends State<ProductPage> {
+  final ValueNotifier<String> sortNotifier = ValueNotifier<String>("latest");
+
+  void _showSortOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -53,8 +59,6 @@ class ProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ValueNotifier<String> sortNotifier = ValueNotifier<String>("latest");
-
     return Scaffold(
       backgroundColor: const Color(0xFFF4F4F4),
       body: Column(
@@ -80,15 +84,21 @@ class ProductPage extends StatelessWidget {
               children: [
                 IconButton(
                   icon: const Icon(Icons.tune),
-                  onPressed: () => _showSortOptions(context, sortNotifier),
+                  onPressed: () => _showSortOptions(context),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Navigate to the ProductEntryForm when the button is clicked
+                    // Navigate to the ProductEntryForm and refresh the product list on success
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ProductEntryForm(),
+                        builder: (context) => ProductEntryForm(
+                          onProductAdded: () {
+                            setState(() {
+                              // Rebuild the widget to refresh the product list
+                            });
+                          },
+                        ),
                       ),
                     );
                   },
