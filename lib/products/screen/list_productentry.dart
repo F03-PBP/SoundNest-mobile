@@ -1,10 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:soundnest_mobile/authentication/models/user_model.dart';
 import 'package:soundnest_mobile/products/models/product_entry.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:soundnest_mobile/widgets/toast.dart';
 import 'product_details.dart';
 import 'package:soundnest_mobile/products/screen/editproduct_form.dart';
 
@@ -32,7 +33,6 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
       }
       return listProduct;
     } catch (e) {
-      print('Error fetching products: $e');
       return [];
     }
   }
@@ -47,6 +47,20 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    final user = Provider.of<UserModel>(context);
+    final List<String> imagePaths = [
+      'assets/images/1.png',
+      'assets/images/2.png',
+      'assets/images/3.png',
+      'assets/images/4.png',
+      'assets/images/5.png',
+      'assets/images/6.png',
+      'assets/images/7.png',
+      'assets/images/8.png',
+      'assets/images/9.png',
+      'assets/images/10.png',
+    ];
+
     return FutureBuilder(
       future: fetchProducts(request),
       builder: (context, AsyncSnapshot<List<ProductEntry>> snapshot) {
@@ -77,6 +91,7 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
                     final product = snapshot.data![index].fields;
+                    final imagePath = imagePaths[index % imagePaths.length];
 
                     return GestureDetector(
                       onTap: () {
@@ -115,9 +130,10 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: Image.asset(
-                                  'assets/images/templateimage.png',
-                                  fit: BoxFit.cover,
+                                  imagePath,
+                                  fit: BoxFit.contain,
                                   width: double.infinity,
+                                  height: 140,
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -166,116 +182,128 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                               const Spacer(),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => EditProductForm(
-                                            productId: snapshot.data![index].pk,
-                                            productName: product.productName,
-                                            price: product.price.toDouble(),
-                                            rating: product.rating.toDouble(),
-                                            reviews: product.reviews,
-                                            onProductUpdated: () {
-                                              setState(() {});
-                                            },
+                                children: user.isSuperuser
+                                    ? [
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditProductForm(
+                                                  productId:
+                                                      snapshot.data![index].pk,
+                                                  productName:
+                                                      product.productName,
+                                                  price:
+                                                      product.price.toDouble(),
+                                                  rating:
+                                                      product.rating.toDouble(),
+                                                  reviews: product.reviews,
+                                                  onProductUpdated: () {
+                                                    setState(() {});
+                                                  },
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: const BoxDecoration(
+                                              color: Color(0xFF362417),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(
+                                              Icons.edit,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
                                           ),
                                         ),
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(10),
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFF362417),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: const Icon(
-                                        Icons.edit,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  GestureDetector(
-                                    onTap: () async {
-                                      final bool confirmed = await showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title:
-                                                const Text("Konfirmasi Ulang"),
-                                            content: const Text(
-                                                "Apakah anda ingin menghapus produk ini?"),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () => Navigator.pop(
-                                                    context, false),
-                                                child: const Text("Cancel"),
-                                              ),
-                                              TextButton(
-                                                onPressed: () => Navigator.pop(
-                                                    context, true),
-                                                child: const Text("Delete"),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-
-                                      if (confirmed) {
-                                        try {
-                                          final response =
-                                              await request.postJson(
-                                            'http://localhost:8000/delete_flutter/${snapshot.data![index].pk}/',
-                                            jsonEncode(
-                                                {}), // Send an empty body
-                                          );
-
-                                          if (response['status'] == "success") {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              const SnackBar(
-                                                  content: Text(
-                                                      "Product successfully deleted!")),
+                                        const SizedBox(width: 8),
+                                        GestureDetector(
+                                          onTap: () async {
+                                            final bool confirmed =
+                                                await showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                      "Konfirmasi Ulang"),
+                                                  content: const Text(
+                                                      "Apakah anda ingin menghapus produk ini?"),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              context, false),
+                                                      child:
+                                                          const Text("Cancel"),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              context, true),
+                                                      child:
+                                                          const Text("Delete"),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
                                             );
 
-                                            setState(() {
-                                              // Refresh the product list
-                                            });
-                                          } else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                  content: Text(
-                                                      "Error: ${response['message']}")),
-                                            );
-                                          }
-                                        } catch (e) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                                content: Text("Error: $e")),
-                                          );
-                                        }
-                                      }
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(10),
-                                      decoration: const BoxDecoration(
-                                        color: Colors.red,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: const Icon(
-                                        Icons.delete,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                            if (confirmed) {
+                                              try {
+                                                final response =
+                                                    await request.postJson(
+                                                  'http://localhost:8000/delete_flutter/${snapshot.data![index].pk}/',
+                                                  jsonEncode({}),
+                                                );
+
+                                                if (response['status'] ==
+                                                    "success") {
+                                                  Toast.success(context,
+                                                      "Product successfully deleted!");
+
+                                                  setState(() {});
+                                                } else {
+                                                  Toast.error(context,
+                                                      "Error: ${response['message']}");
+                                                }
+                                              } catch (e) {
+                                                Toast.error(
+                                                    context, "Error: $e");
+                                              }
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: const BoxDecoration(
+                                              color: Colors.red,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(
+                                              Icons.delete,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
+                                          ),
+                                        ),
+                                      ]
+                                    : [
+                                        Container(
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: const BoxDecoration(
+                                            color: Color(0xFF362417),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.add,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ],
                               ),
                             ],
                           ),

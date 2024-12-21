@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:soundnest_mobile/authentication/models/user_model.dart';
 import 'package:soundnest_mobile/products/screen/list_productentry.dart';
 import 'package:soundnest_mobile/products/screen/productentry_form.dart'; // Import the ProductEntryForm
 
@@ -59,6 +61,8 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserModel>(context);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF4F4F4),
       body: Column(
@@ -86,40 +90,41 @@ class _ProductPageState extends State<ProductPage> {
                   icon: const Icon(Icons.tune),
                   onPressed: () => _showSortOptions(context),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    // Navigate to the ProductEntryForm and refresh the product list on success
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductEntryForm(
-                          onProductAdded: () {
-                            setState(() {
-                              // Rebuild the widget to refresh the product list
-                            });
-                          },
+                if (user.isSuperuser)
+                  ElevatedButton(
+                    onPressed: () {
+                      // Navigate to the ProductEntryForm and refresh the product list on success
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductEntryForm(
+                            onProductAdded: () {
+                              setState(() {
+                                // Rebuild the widget to refresh the product list
+                              });
+                            },
+                          ),
                         ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 168, 115, 77),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 168, 115, 77),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                  ),
-                  child: const Text(
-                    'Tambah Produk',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                    child: const Text(
+                      'Tambah Produk',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),

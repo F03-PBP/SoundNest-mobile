@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:soundnest_mobile/widgets/toast.dart';
 
 class EditProductForm extends StatefulWidget {
   final String productId;
@@ -164,22 +165,14 @@ class _EditProductFormState extends State<EditProductForm> {
 
                     if (context.mounted) {
                       if (response['status'] == 'success') {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Product successfully updated!"),
-                          ),
-                        );
+                        Toast.success(context, "Product successfully updated!");
 
                         widget.onProductUpdated();
 
                         // Navigate back to the product list page
                         Navigator.pop(context);
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Error: ${response['error']}"),
-                          ),
-                        );
+                        Toast.error(context, "Error: ${response['error']}");
                       }
                     }
                   }
