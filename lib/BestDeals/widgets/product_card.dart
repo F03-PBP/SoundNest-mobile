@@ -14,7 +14,7 @@ class ProductCard extends StatelessWidget {
   final double discountedPrice;
   final double rating;
   final int numRatings;
-  final int discount;
+  final double discount;
   final String timeRemaining;
   final double maxWidth;
   final String id;
@@ -283,7 +283,7 @@ class ProductCard extends StatelessWidget {
 
 class EditDealsForm extends StatefulWidget {
   final String productId;
-  final int discount;
+  final double discount;
   final DateTime saleEndTime;
   final VoidCallback onRefresh;
 
