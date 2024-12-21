@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:soundnest_mobile/BestDeals/screens/list_bestdeals.dart';
 import 'package:soundnest_mobile/products/screen/product_page.dart';
 import 'package:soundnest_mobile/authentication/screen/profile.dart';
+import 'package:soundnest_mobile/wishlist/screen/wishlist.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -19,7 +20,7 @@ class _MainNavigationState extends State<MainNavigation> {
     ProductPage(),
     BestDealsPage(),
     Center(child: Text('Discussions')), // Placeholder for Discussions
-    Center(child: Text('Wishlist')), // Placeholder for Wishlist
+    WishlistPage(), // Placeholder for Wishlist
     ProfilePage(),
   ];
 
