@@ -457,7 +457,6 @@ class _BestDealsPageState extends State<BestDealsPage> {
   Future<Sale> fetchSaleData() async {
     final response =
         await http.get(Uri.parse('http://localhost:8000/best-deals/json/'));
-    print(json.decode(response.body));
 
     if (response.statusCode == 200) {
       final sale = Sale.fromJson(jsonDecode(response.body));
