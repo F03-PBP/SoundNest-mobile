@@ -75,6 +75,7 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ProductDetailsPage(
+                              productId: snapshot.data![index].pk,
                               productName: product.productName,
                               price: product.price.toDouble(),
                               rating: product.rating.toDouble(),
