@@ -37,16 +37,22 @@ class DealsCarouselItem extends StatelessWidget {
           Expanded(
             flex: 1,
             child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(8.0),
-                bottomLeft: Radius.circular(8.0),
-              ),
-              child: Image.network(
-                'http://127.0.0.1:8000/static/images/templateimage.webp',
-                fit: BoxFit.contain,
-                height: double.infinity,
-              ),
-            ),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8.0),
+                  bottomLeft: Radius.circular(8.0),
+                ),
+                child: Image.asset(
+                  'assets/images/templateimage.png',
+                  fit: BoxFit.contain,
+                  height: double.infinity,
+                )
+
+                // child: Image.network( // URL nya masi local
+                //   'http://127.0.0.1:8000/static/images/templateimage.webp',
+                //   fit: BoxFit.contain,
+                //   height: double.infinity,
+                // ),
+                ),
           ),
           // Right side - Product Details
           Expanded(
@@ -71,13 +77,13 @@ class DealsCarouselItem extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8.0, vertical: 4.0),
                     decoration: BoxDecoration(
-                      color: Colors.blue.shade100,
+                      color: const Color(0xFFAFDF95),
                       borderRadius: BorderRadius.circular(4.0),
                     ),
                     child: Text(
                       'Up to ${product.discount}% Off',
                       style: TextStyle(
-                        color: Colors.blue.shade800,
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -85,10 +91,10 @@ class DealsCarouselItem extends StatelessWidget {
                   const SizedBox(height: 8.0),
                   Text(
                     formatRupiah(product.price),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
-                      color: Colors.blue,
+                      color: Theme.of(context).colorScheme.secondaryContainer,
                     ),
                   ),
                   const SizedBox(height: 4.0),
@@ -187,7 +193,7 @@ class _DealsCarouselState extends State<DealsCarousel> {
           margin: const EdgeInsets.symmetric(horizontal: 4.0),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: _currentPage == index ? Colors.blue : Colors.grey.shade300,
+            color: _currentPage == index ? Colors.brown : Colors.grey.shade300,
           ),
         );
       }),
@@ -205,7 +211,7 @@ class _DealsCarouselState extends State<DealsCarousel> {
             itemCount: widget.products.length,
             itemBuilder: (context, index) {
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 26.0),
                 child: DealsCarouselItem(product: widget.products[index]),
               );
             },
@@ -352,7 +358,7 @@ class _FilterModalState extends State<FilterModal> {
               widget.onApplyFilter();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
+              backgroundColor: const Color(0xFF3D5232),
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
@@ -402,7 +408,9 @@ class _FilterModalState extends State<FilterModal> {
                   vertical: 8.0,
                 ),
                 decoration: BoxDecoration(
-                  color: isSelected ? Colors.blue : Colors.grey.shade100,
+                  color: isSelected
+                      ? const Color(0xFF8FC274)
+                      : Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 child: Text(
@@ -577,6 +585,7 @@ class _BestDealsPageState extends State<BestDealsPage> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color(0xFF8FC274),
         title: const Text('Best Deals'),
       ),
       body: FutureBuilder<Sale>(
@@ -606,8 +615,18 @@ class _BestDealsPageState extends State<BestDealsPage> {
             children: [
               // Search and Filter Bar
               Container(
-                padding: const EdgeInsets.all(16.0),
-                color: Colors.blue,
+                padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color(0xFF8FC274),
+                      Color.fromARGB(159, 191, 162, 132),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [0.2, 1.0],
+                  ),
+                ),
                 child: Row(
                   children: [
                     Expanded(
@@ -645,37 +664,41 @@ class _BestDealsPageState extends State<BestDealsPage> {
                 ),
               ),
 
+              const SizedBox(height: 24.0),
               // Carousel
               if (carouselProducts.isNotEmpty)
                 DealsCarousel(products: carouselProducts),
 
               const SizedBox(height: 16.0),
               if (userModel.isSuperuser)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AddToDealsPage(),
-                          ),
-                        ).then((_) {
-                          // Refresh the deals list when returning from add page
-                          setState(() {
-                            saleData = fetchSaleData();
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AddToDealsPage(),
+                            ),
+                          ).then((_) {
+                            // Refresh the deals list when returning from add page
+                            setState(() {
+                              saleData = fetchSaleData();
+                            });
                           });
-                        });
-                      },
-                      icon: const Icon(Icons.add),
-                      label: const Text('Add to Deals'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 8.0),
+                        },
+                        icon: const Icon(Icons.add),
+                        label: const Text('Add to Deals'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 8.0),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               const SizedBox(height: 16.0),
 
@@ -685,6 +708,8 @@ class _BestDealsPageState extends State<BestDealsPage> {
               const SectionHeader(
                   title: 'Least Countdown (sorted by time remaining)'),
               bestDealsGrid(filteredLeastCountdown),
+
+              const SizedBox(height: 8.0),
             ],
           );
         },
@@ -693,38 +718,40 @@ class _BestDealsPageState extends State<BestDealsPage> {
   }
 
   Widget bestDealsGrid(List<dynamic> productData) {
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
-        crossAxisSpacing: 16.0,
-        mainAxisSpacing: 16.0,
-        childAspectRatio: 0.75, // Adjust this value to control card height
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(32, 8, 32, 20),
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
+          crossAxisSpacing: 16.0,
+          mainAxisSpacing: 16.0,
+          childAspectRatio: 0.65, // Adjust this value to control card height
+        ),
+        itemCount: productData.length,
+        itemBuilder: (context, index) {
+          var item = productData[index];
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              return ProductCard(
+                imageUrl: 'assets/images/templateimage.png',
+                title: item.productName,
+                originalPrice: item.originalPrice,
+                discountedPrice: item.price,
+                rating: item.rating,
+                numRatings: item.reviews,
+                discount: item.discount,
+                timeRemaining: item.timeRemaining,
+                maxWidth: constraints.maxWidth,
+                id: item.id,
+                saleEndTime: item.saleEndTime,
+                onDelete: () => refreshDealsList(),
+              );
+            },
+          );
+        },
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
       ),
-      itemCount: productData.length,
-      itemBuilder: (context, index) {
-        var item = productData[index];
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            return ProductCard(
-              imageUrl:
-                  'http://127.0.0.1:8000/static/images/templateimage.webp',
-              title: item.productName,
-              originalPrice: item.originalPrice,
-              discountedPrice: item.price,
-              rating: item.rating,
-              numRatings: item.reviews,
-              discount: item.discount,
-              timeRemaining: item.timeRemaining,
-              maxWidth: constraints.maxWidth,
-              id: item.id,
-              saleEndTime: item.saleEndTime,
-              onDelete: () => refreshDealsList(),
-            );
-          },
-        );
-      },
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
     );
   }
 }
@@ -736,7 +763,7 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
       child: Text(
         title,
         style: const TextStyle(

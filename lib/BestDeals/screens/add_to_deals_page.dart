@@ -199,12 +199,15 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add to Deals'),
+        backgroundColor: Colors.brown,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title:
+            const Text('Add to Deals', style: TextStyle(color: Colors.white)),
       ),
       body: Form(
         key: _formKey,
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(32.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -287,7 +290,10 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
                             return Container(
                               decoration: BoxDecoration(
                                 border: isSelected
-                                    ? Border.all(color: Colors.blue, width: 2)
+                                    ? Border.all(
+                                        color: const Color.fromARGB(
+                                            255, 235, 192, 137),
+                                        width: 2)
                                     : null,
                                 borderRadius: BorderRadius.circular(4),
                               ),
@@ -423,7 +429,11 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: _submitForm,
-                child: const Text('Add to Deals'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.brown,
+                ),
+                child: const Text('Add to Deals',
+                    style: TextStyle(color: Colors.white)),
               ),
             ],
           ),

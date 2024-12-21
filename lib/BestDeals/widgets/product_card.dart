@@ -122,7 +122,8 @@ class ProductCard extends StatelessWidget {
                       children: [
                         // Edit Button
                         CircleAvatar(
-                          backgroundColor: Colors.blue.withOpacity(0.8),
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
                           radius: 16,
                           child: IconButton(
                             icon: const Icon(Icons.edit,
@@ -167,10 +168,10 @@ class ProductCard extends StatelessWidget {
                   children: [
                     Text(
                       formatRupiah(discountedPrice),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16.0,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                        color: Theme.of(context).colorScheme.secondaryContainer,
                       ),
                     ),
                     const SizedBox(width: 4.0),
@@ -456,7 +457,7 @@ class _EditDealsFormState extends State<EditDealsForm> {
           ElevatedButton(
             onPressed: _submitForm,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.brown,
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
