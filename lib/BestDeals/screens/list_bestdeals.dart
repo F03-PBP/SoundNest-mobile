@@ -259,6 +259,12 @@ class _FilterModalState extends State<FilterModal> {
     _localDiscountRange = widget.selectedDiscountRange;
   }
 
+  void _handleOptionTap(String option, String currentValue, Function(String) onChanged) {
+    // If the tapped option is already selected, set it to 'All' (unselect)
+    // Otherwise, select the tapped option
+    onChanged(option == currentValue ? 'All' : option);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -300,7 +306,9 @@ class _FilterModalState extends State<FilterModal> {
             ['8 to 10', '6 to 8', 'Below 6'],
             (value) {
               setState(() {
-                _localRatingRange = value;
+                _handleOptionTap(value, _localRatingRange, (newValue) {
+                  _localRatingRange = newValue;
+                });
               });
             },
           ),
@@ -311,7 +319,9 @@ class _FilterModalState extends State<FilterModal> {
             ['Below 500k', '500k to 1.5M', '1.5M to 3M', 'Above 3M'],
             (value) {
               setState(() {
-                _localPriceRange = value;
+                 _handleOptionTap(value, _localPriceRange, (newValue) {
+                  _localPriceRange = newValue;
+                });
               });
             },
           ),
@@ -322,7 +332,9 @@ class _FilterModalState extends State<FilterModal> {
             ['Below 10%', '10% to 30%', 'Above 30%'],
             (value) {
               setState(() {
-                _localDiscountRange = value;
+                _handleOptionTap(value, _localDiscountRange, (newValue) {
+                  _localDiscountRange = newValue;
+                });
               });
             },
           ),
@@ -424,6 +436,7 @@ class _BestDealsPageState extends State<BestDealsPage> {
   String _selectedPriceRange = 'All';
   String _selectedRatingRange = 'All';
   String _selectedDiscountRange = 'All';
+  Sale? _currentSaleData;
 
   @override
   void initState() {
@@ -439,6 +452,7 @@ class _BestDealsPageState extends State<BestDealsPage> {
       // Sort and get top 5 products with least time remaining
       setState(() {
         carouselProducts = sale.leastCountdown.take(5).toList();
+        _currentSaleData = sale;
       });
       return sale;
     } else {
@@ -465,11 +479,9 @@ class _BestDealsPageState extends State<BestDealsPage> {
         onRatingRangeChanged: (value) => setState(() => _selectedRatingRange = value),
         onDiscountRangeChanged: (value) => setState(() => _selectedDiscountRange = value),
         onApplyFilter: () {
-          if (mounted) {
+          if (mounted && _currentSaleData != null) {  // Check if we have the data
             setState(() {
-              // Trigger filtering
-              final data = saleData as Sale;
-              _filterProducts(data);
+              _filterProducts(_currentSaleData!);  // Use the stored sale data
             });
           }
         },
