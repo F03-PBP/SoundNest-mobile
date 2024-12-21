@@ -455,6 +455,8 @@ class _BestDealsPageState extends State<BestDealsPage> {
   }
 
   Future<Sale> fetchSaleData() async {
+    await deleteExpiredDeals();
+
     final response =
         await http.get(Uri.parse('http://localhost:8000/best-deals/json/'));
 
@@ -470,6 +472,42 @@ class _BestDealsPageState extends State<BestDealsPage> {
       throw Exception('Failed to load sale data');
     }
   }
+
+  Future<void> deleteExpiredDeals() async {
+  try {
+    final response = await http.get(Uri.parse('http://localhost:8000/best-deals/json/'));
+    
+    if (response.statusCode != 200) {
+      throw Exception('Failed to fetch deals data');
+    }
+
+    final data = jsonDecode(response.body);
+    final currentTime = DateTime.now();
+
+    // Filter expired deals
+    final expiredDeals = data['least_countdown'].where((product) {
+      final saleEndTime = DateTime.parse(product['sale_end_time']);
+      return saleEndTime.isBefore(currentTime);
+    }).toList();
+
+    // Delete expired deals
+    for (var product in expiredDeals) {
+      try {
+        final deleteResponse = await http.delete(
+          Uri.parse('http://localhost:8000/best-deals/delete-deals/${product['id']}/'),
+        );
+
+        if (deleteResponse.statusCode != 200) {
+          print('Failed to delete expired product with ID ${product['id']}');
+        }
+      } catch (e) {
+        print('Error deleting expired deal: $e');
+      }
+    }
+  } catch (e) {
+    print('Error in deleteExpiredDeals: $e');
+  }
+}
 
   void refreshDealsList() {
     setState(() {
@@ -677,7 +715,8 @@ class _BestDealsPageState extends State<BestDealsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ElevatedButton.icon(
-                        onPressed: () {
+                        onPressed: () async {
+                          await deleteExpiredDeals(); // deals yang udah expired akan masuk ke list produk yg bisa ditambahin lagi ke sale
                           Navigator.push(
                             context,
                             MaterialPageRoute(
