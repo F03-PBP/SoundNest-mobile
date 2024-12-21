@@ -320,3 +320,7 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
     );
   }
 }
+
+extension on Color {
+  withValues({required double alpha}) {}
+}
