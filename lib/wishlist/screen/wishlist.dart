@@ -22,7 +22,7 @@ class _WishlistPageState extends State<WishlistPage> {
   // Fungsi untuk mengambil data produk wishlist dari Django
   Future<List<WishlistProduct>> fetchWishlist(CookieRequest request) async {
     final response = await request.get(
-        'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/wishlist/json/wishlist');
+        'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/wishlist/json/wishlist'); // TODO: Ganti ke PWS
     var data = response;
     List<WishlistProduct> listProduct = [];
     for (var d in data) {
@@ -101,7 +101,7 @@ class _WishlistPageState extends State<WishlistPage> {
 
     // Mengirim request POST dengan JSON payload menggunakan postJson
     final response = await request.postJson(
-      'http://127.0.0.1:8000/wishlist/edit_quantity_flutter/', // TODO: Ganti ke PWS
+      'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/wishlist/edit_quantity_flutter/', // TODO: Ganti ke PWS
       jsonEncode({
         'product_id': productId,
         'new_quantity': newQuantity,

@@ -254,7 +254,7 @@ class ProductCard extends StatelessWidget {
               try {
                 final response = await http.delete(
                   Uri.parse(
-                      'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/best-deals/delete-deals/$id/'),
+                      'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/best-deals/delete-deals/$id/'), // TODO; Ganti ke PWS
                 );
 
                 if (response.statusCode == 200) {
@@ -355,7 +355,7 @@ class _EditDealsFormState extends State<EditDealsForm> {
     try {
       final response = await http.put(
         Uri.parse(
-            'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/best-deals/edit-deals/${widget.productId}/'),
+            'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/best-deals/edit-deals/${widget.productId}/'), // TODO: Ganti ke PWS
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'discount': int.parse(_discountController.text),

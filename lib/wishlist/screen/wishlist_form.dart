@@ -19,7 +19,7 @@ class _ProductEntryFormPageState extends State<ProductEntryFormPage> {
 
   Future<Map<String, String>> fetchProducts(CookieRequest request) async {
     final response = await request.get(
-        'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/wishlist/json/product');
+        'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/wishlist/json/product'); // TODO: Ganti ke PWS
     Map<String, String> productMap = {};
     for (var product in response) {
       if (product != null) {
@@ -133,7 +133,7 @@ class _ProductEntryFormPageState extends State<ProductEntryFormPage> {
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 final response = await request.postJson(
-                                  "https://henry-aditya-soundnest.pbp.cs.ui.ac.id/wishlist/create-wishlist-flutter/",
+                                  "https://henry-aditya-soundnest.pbp.cs.ui.ac.id/wishlist/create-wishlist-flutter/", // TODO: Ganti ke PWS
                                   jsonEncode(<String, dynamic>{
                                     'product_id': _selectedProductId,
                                     'jumlah': int.parse(_jumlahController.text),
