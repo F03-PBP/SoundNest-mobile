@@ -774,34 +774,30 @@ class _BestDealsPageState extends State<BestDealsPage> {
 
   Widget bestDealsGrid(List<dynamic> productData) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(32, 8, 32, 20),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 20), // Reduced horizontal padding
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
-          crossAxisSpacing: 16.0,
-          mainAxisSpacing: 16.0,
-          childAspectRatio: 0.65, // Adjust this value to control card height
+          crossAxisSpacing: 8.0, // Reduced spacing
+          mainAxisSpacing: 8.0, // Reduced spacing
+          childAspectRatio: 0.55, // Adjusted for more height
         ),
         itemCount: productData.length,
         itemBuilder: (context, index) {
           var item = productData[index];
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              return ProductCard(
-                imageUrl: 'assets/images/1.png',
-                title: item.productName,
-                originalPrice: item.originalPrice.toDouble(),
-                discountedPrice: item.price.toDouble(),
-                rating: item.rating.toDouble(),
-                numRatings: item.reviews,
-                discount: item.discount.toDouble(),
-                timeRemaining: item.timeRemaining,
-                maxWidth: constraints.maxWidth,
-                id: item.id,
-                saleEndTime: item.saleEndTime,
-                onDelete: () => refreshDealsList(),
-              );
-            },
+          return ProductCard(
+            imageUrl: 'assets/images/1.png',
+            title: item.productName,
+            originalPrice: item.originalPrice.toDouble(),
+            discountedPrice: item.price.toDouble(),
+            rating: item.rating.toDouble(),
+            numRatings: item.reviews,
+            discount: item.discount.toDouble(),
+            timeRemaining: item.timeRemaining,
+            maxWidth: MediaQuery.of(context).size.width / 2 - 24, // Account for padding
+            id: item.id,
+            saleEndTime: item.saleEndTime,
+            onDelete: () => refreshDealsList(),
           );
         },
         shrinkWrap: true,

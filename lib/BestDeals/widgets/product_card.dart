@@ -79,7 +79,7 @@ class ProductCard extends StatelessWidget {
         children: [
           // Image section with fixed aspect ratio
           SizedBox(
-            height: 190.0, // Adjust the height as per your needs
+            height: 140.0, // Adjust the height as per your needs
             width: double.infinity,
             child: Stack(
               children: [
@@ -157,7 +157,7 @@ class ProductCard extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 14.0,
+                    fontSize: 12.0,
                     fontWeight: FontWeight.bold,
                   ),
                   maxLines: 2,
@@ -169,7 +169,7 @@ class ProductCard extends StatelessWidget {
                     Text(
                       formatRupiah(discountedPrice),
                       style: TextStyle(
-                        fontSize: 16.0,
+                        fontSize: 12.0,
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.secondaryContainer,
                       ),
@@ -178,7 +178,7 @@ class ProductCard extends StatelessWidget {
                     Text(
                       formatRupiah(originalPrice),
                       style: TextStyle(
-                        fontSize: 12.0,
+                        fontSize: 8.0,
                         decoration: TextDecoration.lineThrough,
                         color: Colors.grey.shade600,
                       ),
@@ -192,7 +192,7 @@ class ProductCard extends StatelessWidget {
                     Text(
                       ' $rating ($numRatings)',
                       style: TextStyle(
-                        fontSize: 12.0,
+                        fontSize: 10.0,
                         color: Colors.grey.shade600,
                       ),
                     ),
@@ -202,7 +202,7 @@ class ProductCard extends StatelessWidget {
                 Text(
                   'Sales ends in: $timeRemaining',
                   style: const TextStyle(
-                    fontSize: 12.0,
+                    fontSize: 10.0,
                     color: Colors.red,
                   ),
                   maxLines: 1,

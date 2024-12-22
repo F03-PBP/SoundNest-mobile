@@ -174,7 +174,12 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
       final response = await http.post(
         Uri.parse(
             'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/best-deals/add-to-deals/'),
-        headers: {'Content-Type': 'application/json'},
+            // 'http://localhost:8000/best-deals/add-to-deals/'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
         body: json.encode({
           'product_id': _selectedProduct!.id,
           'discount': int.parse(_discountController.text),

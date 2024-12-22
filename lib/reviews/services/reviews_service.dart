@@ -71,8 +71,7 @@ class ReviewsService {
       if (byUser) 'by_user': 'true',
     };
 
-    final uri = Uri.http('henry-aditya-soundnest.pbp.cs.ui.ac.id/',
-        'reviews/flutter/show_reviews', queryParams);
+    final uri = Uri.http('henry-aditya-soundnest.pbp.cs.ui.ac.id', 'reviews/flutter/show_reviews', queryParams);
 
     // Review by user
     final Map<String, String> headers = (byUser && userModel != null)
