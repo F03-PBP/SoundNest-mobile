@@ -136,7 +136,7 @@ class _ProductEntryFormState extends State<ProductEntryForm> {
 
                     // Send data to the Django API
                     final response = await request.postJson(
-                      "http://localhost:8000/create_flutter/", // TODO: Ganti ke PWS
+                      "https://henry-aditya-soundnest.pbp.cs.ui.ac.id/create_flutter/",
                       jsonEncode({
                         'name': _productName,
                         'price': _price.toString(),

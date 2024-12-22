@@ -6,7 +6,7 @@ import 'package:soundnest_mobile/reviews/models/reviews_model.dart';
 
 class ReviewsService {
   static const String baseUrl =
-      'http://localhost:8000/reviews'; // TODO: Ganti ke PWS
+      'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/reviews';
 
   // ADD REVIEW
   static Future<Map<String, dynamic>> addReview(
@@ -71,8 +71,8 @@ class ReviewsService {
       if (byUser) 'by_user': 'true',
     };
 
-    final uri = Uri.http('localhost:8000', 'reviews/flutter/show_reviews',
-        queryParams); // TODO: Ganti ke PWS
+    final uri = Uri.http('henry-aditya-soundnest.pbp.cs.ui.ac.id/',
+        'reviews/flutter/show_reviews', queryParams);
 
     // Review by user
     final Map<String, String> headers = (byUser && userModel != null)
