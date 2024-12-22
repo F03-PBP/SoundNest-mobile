@@ -460,7 +460,7 @@ class _BestDealsPageState extends State<BestDealsPage> {
     await deleteExpiredDeals();
 
     final response = await http.get(Uri.parse(
-        'http://localhost:8000/best-deals/json/')); // TODO: Ganti ke PWS
+        'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/best-deals/json/')); // TODO: Ganti ke PWS
 
     if (response.statusCode == 200) {
       final sale = Sale.fromJson(jsonDecode(response.body));
@@ -478,7 +478,7 @@ class _BestDealsPageState extends State<BestDealsPage> {
   Future<void> deleteExpiredDeals() async {
     try {
       final response = await http.get(Uri.parse(
-          'http://localhost:8000/best-deals/json/')); // TODO: Ganti ke PWS
+          'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/best-deals/json/')); // TODO: Ganti ke PWS
 
       if (response.statusCode != 200) {
         throw Exception('Failed to fetch deals data');
@@ -498,7 +498,7 @@ class _BestDealsPageState extends State<BestDealsPage> {
         try {
           final deleteResponse = await http.delete(
             Uri.parse(
-                'http://localhost:8000/best-deals/delete-deals/${product['id']}/'), // TODO: Ganti ke PWS
+                'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/best-deals/delete-deals/${product['id']}/'), // TODO: Ganti ke PWS
           );
 
           if (deleteResponse.statusCode != 200) {

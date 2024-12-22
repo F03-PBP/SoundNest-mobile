@@ -162,7 +162,7 @@ class _EditProductFormState extends State<EditProductForm> {
 
                     // Send updated data to the Django API
                     final response = await request.postJson(
-                      "http://localhost:8000/edit_flutter/${widget.productId}/", // TODO: Ganti ke PWS
+                      "https://henry-aditya-soundnest.pbp.cs.ui.ac.id/edit_flutter/${widget.productId}/", // TODO: Ganti ke PWS
                       jsonEncode({
                         'product_name': _productName,
                         'price': _price.toString(),

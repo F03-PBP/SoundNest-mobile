@@ -23,7 +23,7 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
   Future<List<ProductEntry>> fetchProducts(CookieRequest request) async {
     try {
       final response = await request.get(
-        'http://localhost:8000/api/products/?sort=${widget.sortOption}', // TODO: Ganti ke PWS
+        'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/api/products/?sort=${widget.sortOption}', // TODO: Ganti ke PWS
       );
 
       List<ProductEntry> listProduct = [];
@@ -257,7 +257,7 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                                               try {
                                                 final response =
                                                     await request.postJson(
-                                                  'http://localhost:8000/delete_flutter/${snapshot.data![index].pk}/', // TODO: Ganti ke PWS
+                                                  'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/delete_flutter/${snapshot.data![index].pk}/', // TODO: Ganti ke PWS
                                                   jsonEncode({}),
                                                 );
 
