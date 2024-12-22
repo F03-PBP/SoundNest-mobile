@@ -21,14 +21,14 @@ class _LogoPageState extends State<LogoPage> {
       Future.delayed(const Duration(seconds: 2), () {
         if (mounted) {
           if (userModel.isLoggedIn) {
-            // Sudah pernah login
+            // User already logged in
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const MainNavigation(),
                 ));
           } else {
-            // Belum login
+            // User not logged in
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const LoginPage()),
@@ -45,13 +45,11 @@ class _LogoPageState extends State<LogoPage> {
       body: Container(
         color: Theme.of(context).colorScheme.secondary,
         child: const Center(
-          child: Text(
-            "SoundNest",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24.0,
-              fontFamily: 'Inter',
-            ),
+          child: Image(
+            image: AssetImage('assets/images/soundnestlogo.png'),
+            width: 160, // Adjust width as needed
+            height: 160, // Adjust height as needed
+            fit: BoxFit.contain, // Ensures the logo fits nicely
           ),
         ),
       ),
