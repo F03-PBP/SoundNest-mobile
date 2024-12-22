@@ -58,7 +58,7 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://localhost:8000/best-deals/json/'), // TODO: Ganti ke PWS
+            'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/best-deals/json/'),
       );
 
       if (response.statusCode == 200) {
@@ -173,7 +173,7 @@ class _AddToDealsPageState extends State<AddToDealsPage> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://localhost:8000/best-deals/add-to-deals/'), // TODO: Ganti ke PWS
+            'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/best-deals/add-to-deals/'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'product_id': _selectedProduct!.id,

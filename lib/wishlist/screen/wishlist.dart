@@ -22,7 +22,7 @@ class _WishlistPageState extends State<WishlistPage> {
   // Fungsi untuk mengambil data produk wishlist dari Django
   Future<List<WishlistProduct>> fetchWishlist(CookieRequest request) async {
     final response = await request.get(
-        'http://127.0.0.1:8000/wishlist/json/wishlist'); // TODO: Ganti ke PWS
+        'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/wishlist/json/wishlist');
     var data = response;
     List<WishlistProduct> listProduct = [];
     for (var d in data) {
@@ -80,7 +80,7 @@ class _WishlistPageState extends State<WishlistPage> {
   // Fungsi untuk menghapus produk dari wishlist berdasarkan ID
   Future<void> deleteProduct(CookieRequest request, String productId) async {
     final response = await request.post(
-        'http://127.0.0.1:8000/wishlist/delete_flutter/',
+        'https://henry-aditya-soundnest.pbp.cs.ui.ac.id/wishlist/delete_flutter/',
         {'productId': productId}); // TODO: Ganti ke PWS
     if (response['status'] == 'success') {
       setState(() {}); // Menyegarkan tampilan setelah penghapusan
