@@ -86,13 +86,12 @@ class ProductCard extends StatelessWidget {
                 ClipRRect(
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(8.0)),
-                  child: Image.network(
-                    imageUrl,
+                  child: Image.asset(
+                    'assets/images/1.png', // Path to your image in the assets folder
                     width: double.infinity,
                     height: double.infinity,
-                    fit: BoxFit
-                        .contain, // This will ensure the entire image is visible without being cropped
-                  ),
+                    fit: BoxFit.contain, // This will ensure the entire image is visible without being cropped
+                  )
                 ),
                 Positioned(
                   top: 8.0,
