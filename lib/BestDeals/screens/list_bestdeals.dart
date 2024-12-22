@@ -68,7 +68,7 @@ class DealsCarouselItem extends StatelessWidget {
                   Text(
                     product.productName,
                     style: const TextStyle(
-                      fontSize: 16.0,
+                      fontSize: 14.0,
                       fontWeight: FontWeight.bold,
                     ),
                     maxLines: 2,
@@ -85,6 +85,7 @@ class DealsCarouselItem extends StatelessWidget {
                     child: Text(
                       'Up to ${product.discount}% Off',
                       style: const TextStyle(
+                        fontSize: 14.0,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
@@ -94,7 +95,7 @@ class DealsCarouselItem extends StatelessWidget {
                   Text(
                     product.price != null ? formatRupiah(product.price) : '',
                     style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 16.0,
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.secondaryContainer,
                     ),
@@ -104,7 +105,7 @@ class DealsCarouselItem extends StatelessWidget {
                     'Time remaining: ${product.timeRemaining}',
                     style: const TextStyle(
                       color: Colors.red,
-                      fontSize: 12.0,
+                      fontSize: 10.0,
                     ),
                   ),
                 ],
