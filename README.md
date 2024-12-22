@@ -6,7 +6,7 @@
 
 # APK DOWNLOAD LINK🌐
 ### CHECK OUT OUR MOBILE APP!
-[Download Now](https://install.appcenter.ms/orgs/f03pbp/apps/soundnest/distribution_groups/pas/releases/2)
+[Download Now](https://install.appcenter.ms/orgs/f03pbp/apps/soundnest/distribution_groups/pas/releases/5)
 
 # VIDEO PROMOTION📻
 [Watch Now!](https://youtu.be/AjnKmJsNXVE)
