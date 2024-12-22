@@ -1,9 +1,15 @@
 # 💻PROYEK AKHIR SEMESTER PBP F💻
 <img src="https://st2.depositphotos.com/1026266/8677/i/450/depositphotos_86776490-stock-photo-turntable-playing-classical-music-with.jpg" style="display: block; margin: 0 auto, width: 50%; height: 50%;">
 
+# BUILD STATUS🚀
+[![Build status](https://build.appcenter.ms/v0.1/apps/e927ec3a-2dde-4367-8f58-a41e512e8706/branches/master/badge)](https://appcenter.ms)
+
 # APK DOWNLOAD LINK🌐
 ### CHECK OUT OUR MOBILE APP!
-<---- COMING SOON DECEMBER 2024 ---->
+[Download Now](https://install.appcenter.ms/orgs/f03pbp/apps/soundnest/distribution_groups/pas/releases/2)
+
+# VIDEO PROMOTION📻
+[Watch Now!](https://youtu.be/AjnKmJsNXVE)
 
 # Anggota Kelompok👨‍💻👩‍💻
 <b>Kelompok FO3:</b>
