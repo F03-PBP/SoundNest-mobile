@@ -107,7 +107,7 @@ class ProductDetailsPage extends StatelessWidget {
                 productName,
                 style: const TextStyle(
                   fontSize: 26,
-                  fontWeight: FontWeight.bold,
+                  // fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 8),
@@ -116,7 +116,7 @@ class ProductDetailsPage extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 22,
                   color: Colors.black,
-                  fontWeight: FontWeight.bold,
+                  // fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 8),
@@ -148,7 +148,7 @@ class ProductDetailsPage extends StatelessWidget {
                   fontSize: 16,
                   color: Colors.black,
                 ),
-                textAlign: TextAlign.justify,
+                // textAlign: TextAlign.justify,
               ),
               const SizedBox(height: 44),
 

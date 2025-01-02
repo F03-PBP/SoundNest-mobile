@@ -36,7 +36,9 @@ class _ProductEntryFormPageState extends State<ProductEntryFormPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Form Tambah Produk', textAlign: TextAlign.center),
+        title: const Text(
+          'Form Tambah Produk',
+        ),
         backgroundColor: Colors.brown,
         foregroundColor: Colors.white,
         leading: Transform.translate(

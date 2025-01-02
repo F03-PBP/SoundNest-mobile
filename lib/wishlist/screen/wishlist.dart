@@ -178,7 +178,7 @@ class _WishlistPageState extends State<WishlistPage> {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 32,
-                                fontWeight: FontWeight.bold,
+                                // fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
@@ -241,13 +241,13 @@ class _WishlistPageState extends State<WishlistPage> {
                               children: [
                                 Text('Total Produk: $totalProduk',
                                     style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold)),
+                                      fontSize: 16,
+                                    )),
                                 const SizedBox(width: 16),
                                 Text('Total Harga: $totalHarga',
                                     style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold)),
+                                      fontSize: 16,
+                                    )),
                               ],
                             ),
                           ),
@@ -296,7 +296,7 @@ class _WishlistPageState extends State<WishlistPage> {
                                   Text(
                                     currentPageData[index].fields.namaProduk,
                                     style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                      // fontWeight: FontWeight.bold,
                                       fontSize: 18.0,
                                     ),
                                     overflow: TextOverflow.ellipsis,

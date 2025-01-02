@@ -48,7 +48,7 @@ class ReviewCard extends StatelessWidget {
                       : productName,
                   style: const TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    // fontWeight: FontWeight.bold,
                   ),
                   overflow: TextOverflow.ellipsis, // Text overflow "..."
                   maxLines: 1,

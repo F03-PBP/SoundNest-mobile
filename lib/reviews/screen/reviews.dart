@@ -102,7 +102,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                   'Write a Review',
                   style: TextStyle(
                     fontSize: 14.0,
-                    fontWeight: FontWeight.bold,
+                    // fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
@@ -149,7 +149,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                         style: const TextStyle(
                             color: Colors.black,
                             fontSize: 14,
-                            fontWeight: FontWeight.bold),
+                            ),
                       ),
                     );
                   }).toList(),
@@ -165,7 +165,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                         'Belum ada review untuk produk ini.',
                         style: TextStyle(
                           fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
+                          // fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
@@ -190,7 +190,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                                     review.userInitials,
                                     style: const TextStyle(
                                       color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                                      // fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
@@ -199,7 +199,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                                   review.userName,
                                   style: const TextStyle(
                                     fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
+                                    // fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 const Spacer(),

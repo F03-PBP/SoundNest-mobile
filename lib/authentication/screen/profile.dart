@@ -116,9 +116,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           Text(
                             username,
                             style: const TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600),
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
                           ),
                           const SizedBox(width: 8),
                           TitleBox(title: userTitle),
@@ -182,9 +182,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                       _showAll
                                           ? 'View Less'
                                           : 'View More Reviews',
-                                      textAlign: TextAlign.center,
+                                      // textAlign: TextAlign.center,
                                       style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
                                         color: Colors.white, // Text color
                                       ),
                                     ),
@@ -219,7 +218,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           style: TextStyle(
                             color: Colors.red,
                             fontSize: 14,
-                            fontWeight: FontWeight.bold,
+                            // fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),

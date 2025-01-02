@@ -133,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                           TextSpan(
                             text: 'Register',
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                              // fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],

@@ -142,7 +142,7 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                                 product.productName,
                                 style: GoogleFonts.inter(
                                   fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                  // fontWeight: FontWeight.bold,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -152,7 +152,7 @@ class _ProductEntryCardsState extends State<ProductEntryCards> {
                                 'Rp${formatPrice(product.price.toString())}',
                                 style: GoogleFonts.inter(
                                   fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                  // fontWeight: FontWeight.bold,
                                   color: Colors.black,
                                 ),
                               ),

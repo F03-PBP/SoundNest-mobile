@@ -28,7 +28,7 @@ class _ProductPageState extends State<ProductPage> {
                 "Filter Produk",
                 style: TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                  // fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 16),
@@ -87,7 +87,7 @@ class _ProductPageState extends State<ProductPage> {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 32,
-                fontWeight: FontWeight.bold,
+                // fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -131,7 +131,7 @@ class _ProductPageState extends State<ProductPage> {
                       'Tambah Produk',
                       style: TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                        // fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),

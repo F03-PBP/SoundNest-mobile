@@ -92,7 +92,7 @@ class _ReviewModalState extends State<ReviewModal> {
           children: [
             Text(
               widget.existingReview == null ? 'Rate Product' : 'Edit Review',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              // style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             Row(

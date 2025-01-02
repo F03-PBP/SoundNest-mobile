@@ -69,7 +69,7 @@ class DealsCarouselItem extends StatelessWidget {
                     product.productName,
                     style: const TextStyle(
                       fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
+                      // fontWeight: FontWeight.bold,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -86,7 +86,7 @@ class DealsCarouselItem extends StatelessWidget {
                       'Up to ${product.discount}% Off',
                       style: const TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                        // fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -95,7 +95,7 @@ class DealsCarouselItem extends StatelessWidget {
                     product.price != null ? formatRupiah(product.price) : '',
                     style: TextStyle(
                       fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+                      // fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.secondaryContainer,
                     ),
                   ),
@@ -294,7 +294,7 @@ class _FilterModalState extends State<FilterModal> {
                 'Filter',
                 style: TextStyle(
                   fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
+                  // fontWeight: FontWeight.bold,
                 ),
               ),
               TextButton(
@@ -370,7 +370,7 @@ class _FilterModalState extends State<FilterModal> {
               'Apply Filter',
               style: TextStyle(
                 fontSize: 16.0,
-                fontWeight: FontWeight.bold,
+                // fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
@@ -393,7 +393,7 @@ class _FilterModalState extends State<FilterModal> {
           title,
           style: const TextStyle(
             fontSize: 16.0,
-            fontWeight: FontWeight.bold,
+            // fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 8.0),
@@ -419,8 +419,6 @@ class _FilterModalState extends State<FilterModal> {
                   option,
                   style: TextStyle(
                     color: isSelected ? Colors.white : Colors.black87,
-                    fontWeight:
-                        isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
               ),
@@ -823,7 +821,7 @@ class SectionHeader extends StatelessWidget {
         title,
         style: const TextStyle(
           fontSize: 18.0,
-          fontWeight: FontWeight.bold,
+          // fontWeight: FontWeight.bold,
         ),
       ),
     );

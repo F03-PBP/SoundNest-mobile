@@ -109,7 +109,7 @@ class ProductCard extends StatelessWidget {
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 12.0,
-                        fontWeight: FontWeight.bold,
+                        // fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -158,7 +158,7 @@ class ProductCard extends StatelessWidget {
                   title,
                   style: const TextStyle(
                     fontSize: 14.0,
-                    fontWeight: FontWeight.bold,
+                    // fontWeight: FontWeight.bold,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -170,7 +170,7 @@ class ProductCard extends StatelessWidget {
                       formatRupiah(discountedPrice),
                       style: TextStyle(
                         fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
+                        // fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.secondaryContainer,
                       ),
                     ),
@@ -179,7 +179,6 @@ class ProductCard extends StatelessWidget {
                       formatRupiah(originalPrice),
                       style: TextStyle(
                         fontSize: 12.0,
-                        decoration: TextDecoration.lineThrough,
                         color: Colors.grey.shade600,
                       ),
                     ),
@@ -391,7 +390,7 @@ class _EditDealsFormState extends State<EditDealsForm> {
             'Edit Deal',
             style: TextStyle(
               fontSize: 20.0,
-              fontWeight: FontWeight.bold,
+              // fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 16.0),
@@ -467,7 +466,7 @@ class _EditDealsFormState extends State<EditDealsForm> {
               'Update Deal',
               style: TextStyle(
                 fontSize: 16.0,
-                fontWeight: FontWeight.bold,
+                // fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
